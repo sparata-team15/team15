@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
  * TODO 다른 브랜치 보면서 Entity간 연관관계 매핑 다시하기
  * TODO N+1 발생할 수 있는 부분 찾기
  * TODO querydsl 변경 고려하기
- * TODO
+ * TODO 예외 처리
  */
 @Slf4j
 @Service

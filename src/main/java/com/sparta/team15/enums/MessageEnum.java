@@ -20,7 +20,6 @@ public enum MessageEnum {
     BOARDS_UPDATE_SUCCESS(HttpStatus.OK, "보드를 수정하였습니다."),
     BOARDS_READ_SUCCESS(HttpStatus.OK, "보드를 조회하였습니다."),
     BOARDS_DELETE_SUCCESS(HttpStatus.OK, "보드를 삭제하였습니다."),
-    BOARDS_INVITE_SUCCESS(HttpStatus.OK, "보드에 초대하였습니다.");
     BOARDS_INVITE_SUCCESS(HttpStatus.OK, "보드에 초대하였습니다."),
 
     // 댓글

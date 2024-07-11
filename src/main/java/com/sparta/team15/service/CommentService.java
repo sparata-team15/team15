@@ -5,7 +5,6 @@ import com.sparta.team15.dto.CommentResponseDto;
 import com.sparta.team15.entity.Card;
 import com.sparta.team15.entity.Comment;
 import com.sparta.team15.entity.User;
-import com.sparta.team15.entity.Card;
 import com.sparta.team15.enums.MessageEnum;
 import com.sparta.team15.repository.CommentRepository;
 import com.sparta.team15.repository.UserRepository;
@@ -23,7 +22,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommentService {
     private final CommentRepository commentRepository;
-    private final UserRepository userRepository;
     private final CardRepository cardRepository;
     private final UserRepository userRepository;
 
@@ -34,18 +32,10 @@ public class CommentService {
         Card card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new IllegalArgumentException(MessageEnum.INVALID_CARD_ID.getMessage()));
 
-    public CommentService(CommentRepository commentRepository,
-                          UserRepository userRepository,
-                          CardRepository cardRepository) {
-        this.commentRepository = commentRepository;
-        this.userRepository = userRepository;
-        this.cardRepository = cardRepository;
         Comment comment = new Comment(user, card, requestDto.getContent());
         commentRepository.save(comment);
     }
 
-    public List<Comment> getAllComments() {
-        return commentRepository.findAll();
     // 댓글 전체 목록 조회
     public List<CommentResponseDto> getAllComments(Long cardId) {
         Card card = cardRepository.findById(cardId)
@@ -59,11 +49,6 @@ public class CommentService {
         return commentResponseDto;
     }
 
-    public Comment saveComment(CommentRequestDto commentRequestDto) {
-        User user = userRepository.findById(commentRequestDto.getUserId())
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-        Card card = cardRepository.findById(commentRequestDto.getCardId())
-                .orElseThrow(() -> new IllegalArgumentException("Card not found"));
     // 댓글 수정
     public void updateComment(UserDetailsImpl userDetails, Long commentId, CommentRequestDto requestDto) {
         Comment comment = commentRepository.findById(commentId)
@@ -73,18 +58,10 @@ public class CommentService {
             throw new IllegalStateException(MessageEnum.UNAUTHORIZED_ACTION.getMessage());
         }
 
-        Comment comment = new Comment(user, card, commentRequestDto.getContent());
-        return commentRepository.save(comment);
         comment.update(requestDto.getContent());
         commentRepository.save(comment);
     }
 
-    public boolean deleteComment(Long id) {
-        if (commentRepository.existsById(id)) {
-            commentRepository.deleteById(id);
-            return true;
-        } else {
-            return false;
     // 댓글 삭제
     public void deleteComment(UserDetailsImpl userDetails, Long commentId) {
         Comment comment = commentRepository.findById(commentId)

@@ -20,7 +20,7 @@ public class BoardColumnController {
 
     @PostMapping
     public ResponseEntity<?> addBoardColumn(@RequestBody @Valid BoardColumnRequestDto requestDto, @AuthenticationPrincipal UserDetailImpl userDetail){
-        User loginUser = new User(1L, "user1");
+        User loginUser = new User();
         boardColumnService.addBoardColumn(requestDto, loginUser);
         return ResponseEntity.ok().body("컬럼 생성 성공");
     }

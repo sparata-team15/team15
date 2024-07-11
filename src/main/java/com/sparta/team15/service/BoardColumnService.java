@@ -6,7 +6,6 @@ import com.sparta.team15.entity.BoardColumn;
 import com.sparta.team15.entity.User;
 import com.sparta.team15.repository.BoardColumnRepository;
 import com.sparta.team15.repository.BoardRepository;
-import com.sparta.team15.repository.TeamRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +17,6 @@ public class BoardColumnService {
 
     private final BoardRepository boardRepository;
     private final BoardColumnRepository boardColumnRepository;
-    private final TeamRepository teamRepository;
 
 
     /**

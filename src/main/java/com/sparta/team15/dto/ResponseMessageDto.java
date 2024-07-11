@@ -1,7 +1,6 @@
 package com.sparta.team15.dto;
 
 import com.sparta.team15.enums.MessageEnum;
-import java.util.List;
 
 public class ResponseMessageDto {
   private int status;

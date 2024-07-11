@@ -1,8 +1,5 @@
 package com.sparta.team15.entity;
 
-import com.sparta.team15.exception.MismatchException;
-import com.sparta.team15.exception.NotFoundException;
-import com.sparta.team15.exception.UserErrorCode;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;

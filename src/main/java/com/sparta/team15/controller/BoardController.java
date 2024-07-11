@@ -97,7 +97,7 @@ public class BoardController {
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long boardId)   {
         BoardResponseDto responseDto = boardService.getBoard(boardId, userDetails.getUser());
-        return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.BOARDS_READ_SUCCESS));
+        return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.BOARDS_READ_SUCCESS, responseDto));
     }
 
     /**

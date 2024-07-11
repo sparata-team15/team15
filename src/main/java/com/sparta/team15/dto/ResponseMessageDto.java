@@ -6,16 +6,17 @@ import java.util.List;
 public class ResponseMessageDto {
   private int status;
   private String message;
-  private List<BoardResponseDto> responseDtoList;
+  private Object data;
 
   public ResponseMessageDto(MessageEnum status) {
     this.status = status.getHttpStatus().value();
     this.message = status.getMessage();
   }
 
-  public ResponseMessageDto(MessageEnum messageEnum, List<BoardResponseDto> responseDtoList) {
+  public ResponseMessageDto(MessageEnum messageEnum, Object data) {
     this.status = messageEnum.getHttpStatus().value();
     this.message = messageEnum.getMessage();
-    this.responseDtoList = responseDtoList;
+    this.data = data;
+    ;
   }
 }

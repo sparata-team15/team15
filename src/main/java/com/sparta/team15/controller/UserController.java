@@ -36,12 +36,6 @@ public class UserController {
     return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.WITHDRAW_SUCCESS_MESSAGE));
   }
 
-  @PostMapping("/login")
-  public ResponseEntity<String> login(@Valid @RequestBody LoginRequestDto requestDto) {
-    userService.login(requestDto);
-    return ResponseEntity.ok().body("로그인 성공");
-  }
-
   @PutMapping("/logout/{id}")
   public ResponseEntity<ResponseMessageDto> logout(@PathVariable Long id) {
     userService.logout(id);

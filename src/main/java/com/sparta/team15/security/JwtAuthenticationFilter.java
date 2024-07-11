@@ -2,8 +2,10 @@ package com.sparta.team15.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sparta.team15.dto.LoginRequestDto;
+import com.sparta.team15.dto.ResponseMessageDto;
 import com.sparta.team15.entity.UserRoleEnum;
 import com.sparta.team15.entity.UserStatusEnum;
+import com.sparta.team15.enums.MessageEnum;
 import com.sparta.team15.exception.CommonErrorCode;
 import com.sparta.team15.exception.NotFoundException;
 import com.sparta.team15.jwt.JwtTokenHelper;
@@ -65,8 +67,11 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     response.addHeader(JwtTokenHelper.REFRESH_TOKEN_HEADER, refreshToken);
     jwtTokenHelper.saveRefreshToken(username, refreshToken);
 
-    response.setCharacterEncoding("utf-8");
-    response.getWriter().write("상태 : " + response.getStatus() + ", 로그인 성공");
+    response.setContentType("application/json");
+    response.setCharacterEncoding("UTF-8");
+    response.getWriter().write(new ObjectMapper()
+        .writeValueAsString(new ResponseMessageDto(MessageEnum.LOGIN_SUCCESS.LOGIN_SUCCESS)));
+    response.getWriter().flush();
 
   }
 

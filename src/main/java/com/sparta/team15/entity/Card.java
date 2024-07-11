@@ -29,6 +29,8 @@ public class Card {
 
     private Date date;
 
+    private int position;
+
     public Card(String author, long columnId, String content, String description, Date date) {
         this.author = author;
         this.columnId = columnId;

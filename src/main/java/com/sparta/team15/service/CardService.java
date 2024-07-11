@@ -79,5 +79,8 @@ public class CardService {
     }
 
     // 카드 순서 이동
+    public void updateCardPosition(Long cardId) {
+
+    }
 
 }

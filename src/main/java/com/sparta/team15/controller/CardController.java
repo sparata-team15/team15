@@ -51,7 +51,7 @@ public class CardController {
     }
 
     // 카드 수정
-    @PatchMapping("/{cardId}")
+    @PutMapping("/{cardId}")
     public ResponseEntity<String> updateCard(@PathVariable Long cardId,
                                              @RequestBody CardRequestDto requestDto) {
         cardService.updateCard(cardId, requestDto);
@@ -65,8 +65,12 @@ public class CardController {
         return ResponseEntity.status(HttpStatus.OK).body("카드 삭제 완료");
     }
 
-
     // 카드 순서 이동
+    @PutMapping("/position/{cardId}")
+    public ResponseEntity<String> updateCardPosition(@PathVariable Long cardId) {
+        cardService.updateCardPosition(cardId);
+        return ResponseEntity.status(HttpStatus.OK).body("카드 이동 완료");
+    }
 
 
 }

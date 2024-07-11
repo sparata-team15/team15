@@ -47,7 +47,7 @@ public class BoardColumnService {
     /**
      * 컬럼 삭제
      */
-    public void deleteBoardColumn(){
+    public void deleteBoardColumn(Long boardId, User loginUser){
         // todo: 팀의 매니저인지 확인
         // todo: 매니저 권한 확인
         // todo: board 존재 확인

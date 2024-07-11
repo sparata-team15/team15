@@ -1,6 +1,5 @@
 package com.sparta.team15.controller;
 
-
 import com.sparta.team15.dto.BoardColumnRequestDto;
 import com.sparta.team15.entity.User;
 import com.sparta.team15.security.UserDetailsImpl;
@@ -19,15 +18,17 @@ public class BoardColumnController {
     private final BoardColumnService boardColumnService;
 
     @PostMapping
-    public ResponseEntity<?> addBoardColumn(@RequestBody @Valid BoardColumnRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetail){
+    public ResponseEntity<?> addBoardColumn(@RequestBody @Valid BoardColumnRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
         User loginUser = new User();
         boardColumnService.addBoardColumn(requestDto, loginUser);
+        //todo: message 변경
         return ResponseEntity.ok().body("컬럼 생성 성공");
     }
 
     @DeleteMapping("/{boardId}")
-    public ResponseEntity<?> deleteBoardColumn(@PathVariable Long boardId){
-
+    public ResponseEntity<?> deleteBoardColumn(@PathVariable Long boardId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        User loginUser = new User();
+        boardColumnService.deleteBoardColumn(boardId, loginUser);
         return ResponseEntity.ok().body("컬럼 삭제 성공");
     }
 

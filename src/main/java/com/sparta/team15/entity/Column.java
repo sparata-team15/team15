@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 @Getter
-@Table(name = "kanban_column")
+@Table(name = "board_column")
 public class Column {
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)

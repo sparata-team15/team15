@@ -1,5 +1,13 @@
 package com.sparta.team15.entity;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import com.sparta.team15.dto.BoardColumnRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -9,6 +17,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 public class BoardColumn {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

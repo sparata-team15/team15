@@ -1,6 +1,5 @@
 package com.sparta.team15.controller;
 
-
 import com.sparta.team15.dto.BoardColumnRequestDto;
 import com.sparta.team15.entity.User;
 import com.sparta.team15.security.UserDetailsImpl;

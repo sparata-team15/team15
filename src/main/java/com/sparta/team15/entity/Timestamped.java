@@ -19,24 +19,25 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public abstract class Timestamped {
-  @CreatedDate
-  @jakarta.persistence.Column(updatable = false)
-  @Temporal(TemporalType.TIMESTAMP)
-  private String createdAt;
 
-  @LastModifiedDate
-  @Column
-  @Temporal(TemporalType.TIMESTAMP)
-  private String modifiedAt;
+    @CreatedDate
+    @jakarta.persistence.Column(updatable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private String createdAt;
 
-  @PrePersist
-  public void onPrePersist() {
-    createdAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"));
-    this.modifiedAt = this.createdAt;
-  }
+    @LastModifiedDate
+    @Column
+    @Temporal(TemporalType.TIMESTAMP)
+    private String modifiedAt;
 
-  @PreUpdate
-  public void onPreUpdate() {
-    modifiedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"));
-  }
+    @PrePersist
+    public void onPrePersist() {
+        createdAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"));
+        this.modifiedAt = this.createdAt;
+    }
+
+    @PreUpdate
+    public void onPreUpdate() {
+        modifiedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss"));
+    }
 }

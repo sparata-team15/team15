@@ -1,7 +1,6 @@
 package com.sparta.team15.security;
 
 
-
 import com.sparta.team15.entity.User;
 import com.sparta.team15.entity.UserStatusEnum;
 import java.util.ArrayList;
@@ -71,4 +70,3 @@ public class UserDetailsImpl implements UserDetails {
     return true;
   }
 }
-

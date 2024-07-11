@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @NoArgsConstructor
 public class BoardColumn {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

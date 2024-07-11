@@ -31,6 +31,7 @@ public class BoardController {
 
     /**
      * 보드 생성
+     *
      * @param userDetails
      * @param requestDto
      * @return
@@ -45,6 +46,7 @@ public class BoardController {
 
     /**
      * 보드 수정
+     *
      * @param userDetails
      * @param requestDto
      * @param boardId
@@ -62,6 +64,7 @@ public class BoardController {
 
     /**
      * 보드 삭제
+     *
      * @param userDetails
      * @param boardId
      * @return
@@ -76,6 +79,7 @@ public class BoardController {
 
     /**
      * 모든 보드 조회
+     *
      * @param userDetails
      * @return
      */
@@ -83,11 +87,13 @@ public class BoardController {
     public ResponseEntity<?> getBoards(
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         List<BoardResponseDto> responseDtoList = boardService.getBoards(userDetails.getUser());
-        return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.BOARDS_READ_SUCCESS, responseDtoList));
+        return ResponseEntity.ok(
+            new ResponseMessageDto(MessageEnum.BOARDS_READ_SUCCESS, responseDtoList));
     }
 
     /**
      * 단일 보드 조회
+     *
      * @param userDetails
      * @param boardId
      * @return
@@ -95,13 +101,15 @@ public class BoardController {
     @GetMapping("/{boardId}")
     public ResponseEntity<?> getBoard(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
-        @PathVariable Long boardId)   {
+        @PathVariable Long boardId) {
         BoardResponseDto responseDto = boardService.getBoard(boardId, userDetails.getUser());
-        return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.BOARDS_READ_SUCCESS, responseDto));
+        return ResponseEntity.ok(
+            new ResponseMessageDto(MessageEnum.BOARDS_READ_SUCCESS, responseDto));
     }
 
     /**
      * 보드 유저 초대
+     *
      * @param userDetails
      * @param boardId
      * @return

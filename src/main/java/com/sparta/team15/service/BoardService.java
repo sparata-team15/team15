@@ -31,6 +31,7 @@ public class BoardService {
 
     /**
      * 보드 생성
+     *
      * @param boardRequestDto
      * @param user
      * @return
@@ -44,6 +45,7 @@ public class BoardService {
 
     /**
      * 보드 수정
+     *
      * @param boardId
      * @param requestDto
      * @param user
@@ -61,6 +63,7 @@ public class BoardService {
 
     /**
      * 보드 삭제
+     *
      * @param boardId
      * @param user
      */
@@ -73,6 +76,7 @@ public class BoardService {
 
     /**
      * 모든 보드 조회
+     *
      * @param user
      * @return
      */
@@ -83,6 +87,7 @@ public class BoardService {
 
     /**
      * 단일 보드 조회
+     *
      * @param boardId
      * @param user
      * @return
@@ -94,6 +99,7 @@ public class BoardService {
 
     /**
      * 보드 유저 초대
+     *
      * @param user
      * @param boardId
      */
@@ -109,6 +115,7 @@ public class BoardService {
 
     /**
      * 보드와 권한 확인
+     *
      * @param user
      * @param boardId
      * @return

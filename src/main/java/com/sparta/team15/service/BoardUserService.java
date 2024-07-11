@@ -19,6 +19,7 @@ public class BoardUserService {
 
     /**
      * 이미 초대한 유저인지 확인
+     *
      * @param user
      * @param board
      * @return
@@ -29,6 +30,7 @@ public class BoardUserService {
 
     /**
      * 보드에 유저 초대
+     *
      * @param board
      * @param user
      */
@@ -40,10 +42,12 @@ public class BoardUserService {
 
     /**
      * 보드가 삭제될 때 유저도 삭제되게 함
+     *
      * @param board
      */
     public void deleteBoardUsers(Board board) {
-        List<BoardUser> boardUsers = boardUserRepository.findAllByBoardIdAndIsDeletedIsFalse(board.getId());
+        List<BoardUser> boardUsers = boardUserRepository.findAllByBoardIdAndIsDeletedIsFalse(
+            board.getId());
         for (BoardUser boardUser : boardUsers) {
             boardUser.delete();
         }

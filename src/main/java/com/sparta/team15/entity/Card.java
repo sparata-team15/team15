@@ -12,8 +12,8 @@ import lombok.NoArgsConstructor;
 @Getter
 public class Card {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
 }

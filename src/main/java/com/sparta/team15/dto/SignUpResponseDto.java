@@ -5,12 +5,13 @@ import lombok.Getter;
 
 @Getter
 public class SignUpResponseDto {
+
     private String username;
     private String name;
 
-  public SignUpResponseDto(User user) {
-    this.username = user.getUsername();
-    this.name = user.getName();
+    public SignUpResponseDto(User user) {
+        this.username = user.getUsername();
+        this.name = user.getName();
 
-  }
+    }
 }

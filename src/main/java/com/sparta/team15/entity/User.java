@@ -21,57 +21,57 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @Table(name = "user")
-public class User extends Timestamped{
+public class User extends Timestamped {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
-  private String username;
+    private String username;
 
-  private String name;
+    private String name;
 
-  private String password;
+    private String password;
 
-  private String refreshToken;
+    private String refreshToken;
 
-  @Enumerated(value = EnumType.STRING)
-  private UserStatusEnum status;
+    @Enumerated(value = EnumType.STRING)
+    private UserStatusEnum status;
 
-  @Enumerated(value = EnumType.STRING)
-  private UserRoleEnum role;
+    @Enumerated(value = EnumType.STRING)
+    private UserRoleEnum role;
 
-  private String createdAt;
+    private String createdAt;
 
-  private String modifiedAt;
+    private String modifiedAt;
 
-  private String statusUpdate;
+    private String statusUpdate;
 
     @OneToMany(mappedBy = "createdBy")
     private List<Board> boardList = new ArrayList<>();
 
 
     public User(String username, String password, String name, UserRoleEnum role) {
-    this.username = username;
-    this.password = password;
-    this.name = name;
-    this.status = UserStatusEnum.USER;
-    this.role = role;
-  }
+        this.username = username;
+        this.password = password;
+        this.name = name;
+        this.status = UserStatusEnum.USER;
+        this.role = role;
+    }
 
-  public void withDraw() {
-    this.status = UserStatusEnum.NON_USER;
-    this.statusUpdate = this.getModifiedAt();
-    this.refreshToken = null;
-  }
+    public void withDraw() {
+        this.status = UserStatusEnum.NON_USER;
+        this.statusUpdate = this.getModifiedAt();
+        this.refreshToken = null;
+    }
 
-  public boolean logout() {
-    refreshToken = null;
-    return refreshToken == null ? true : false;
-  }
+    public boolean logout() {
+        refreshToken = null;
+        return refreshToken == null ? true : false;
+    }
 
 
-  public void saveRefreshToken(String refreshToken) {
-    this.refreshToken = refreshToken;
-  }
+    public void saveRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
+    }
 }

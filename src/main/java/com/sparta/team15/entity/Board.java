@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor
-public class Board {
+public class Board extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,13 +31,17 @@ public class Board {
     @Column(nullable = false)
     private Boolean isDeleted = false;
 
+    private String createdAt;
+
+    private String modifiedAt;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User createdBy;
 
     @Builder
     public Board(String title, String description) {
-        this.title= title;
+        this.title = title;
         this.description = description;
     }
 

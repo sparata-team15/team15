@@ -89,7 +89,4 @@ public class UserService {
     }
   }
 
-  public void login(LoginRequestDto requestDto) {
-
-  }
 }

@@ -1,5 +1,8 @@
 package com.sparta.team15.entity;
 
+import com.sparta.team15.exception.MismatchException;
+import com.sparta.team15.exception.NotFoundException;
+import com.sparta.team15.exception.UserErrorCode;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -27,6 +30,8 @@ public class User extends Timestamped{
 
   private String password;
 
+  private String refreshToken;
+
   @Enumerated(value = EnumType.STRING)
   private UserStatusEnum status;
 
@@ -37,6 +42,8 @@ public class User extends Timestamped{
 
   private String modifiedAt;
 
+  private String statusUpdate;
+
   public User(String username, String password, String name, UserRoleEnum role) {
     this.username = username;
     this.password = password;
@@ -45,4 +52,19 @@ public class User extends Timestamped{
     this.role = role;
   }
 
+  public void withDraw() {
+    this.status = UserStatusEnum.NON_USER;
+    this.statusUpdate = this.getModifiedAt();
+    this.refreshToken = null;
+  }
+
+  public boolean logout() {
+    refreshToken = null;
+    return refreshToken == null ? true : false;
+  }
+
+
+  public void saveRefreshToken(String refreshToken) {
+    this.refreshToken = refreshToken;
+  }
 }

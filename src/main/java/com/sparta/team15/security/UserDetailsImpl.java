@@ -2,61 +2,71 @@ package com.sparta.team15.security;
 
 
 import com.sparta.team15.entity.User;
-import com.sparta.team15.entity.UserRoleEnum;
+import com.sparta.team15.entity.UserStatusEnum;
 import java.util.ArrayList;
 import java.util.Collection;
+
+
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 @Getter
-@RequiredArgsConstructor
 public class UserDetailsImpl implements UserDetails {
 
-    private final User user;
+  private final User user;
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        UserRoleEnum role = user.getRole();
-        String authority = role.getAuthority();
+  public UserDetailsImpl(User user) {
+    this.user = user;
+  }
 
-        SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(authority);
-        Collection<GrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(simpleGrantedAuthority);
+  public User getUser() {
+    return user;
+  }
 
-        return authorities;
-    }
+  @Override
+  public String getPassword() {
+    return user.getPassword();
+  }
 
+  @Override
+  public String getUsername() {
+    return user.getUsername();
+  }
 
-    @Override
-    public String getPassword() {
-        return user.getPassword();
-    }
+  //사용자 권한 정하는 메서드
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    UserStatusEnum statusEnum = user.getStatus();
+    String status = statusEnum.getStatus();
 
-    @Override
-    public String getUsername() {
-        return user.getUsername();
-    }
+    SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(status);
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
+    Collection<GrantedAuthority> authorities = new ArrayList<>();
 
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
+    authorities.add(simpleGrantedAuthority);
 
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
+    return authorities;
+  }
 
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
+  @Override
+  public boolean isAccountNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isAccountNonLocked() {
+    return true;
+  }
+
+  @Override
+  public boolean isCredentialsNonExpired() {
+    return true;
+  }
+
+  @Override
+  public boolean isEnabled() {
+    return true;
+  }
 }

@@ -8,6 +8,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import com.sparta.team15.dto.BoardColumnRequestDto;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -29,4 +31,10 @@ public class BoardColumn {
 
     @Column(nullable = false)
     private Double position;
+
+    public BoardColumn(BoardColumnRequestDto requestDto, Board board) {
+        this.board = board;
+        this.title = requestDto.getTitle();
+        this.position = requestDto.getPosition();
+    }
 }

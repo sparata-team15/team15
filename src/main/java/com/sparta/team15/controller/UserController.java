@@ -1,6 +1,5 @@
 package com.sparta.team15.controller;
 
-import com.sparta.team15.dto.LoginRequestDto;
 import com.sparta.team15.dto.ResponseMessageDto;
 import com.sparta.team15.dto.SignUpRequestDto;
 import com.sparta.team15.enums.MessageEnum;
@@ -46,6 +45,5 @@ public class UserController {
         userService.logout(id);
         return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.LOGOUT_SUCCESS));
     }
-
 
 }

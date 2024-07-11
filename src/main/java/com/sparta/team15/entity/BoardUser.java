@@ -26,6 +26,7 @@ public class BoardUser {
     private Long id;
 
     @Column
+    @Builder.Default
     private Boolean isDeleted = false;
 
     @ManyToOne

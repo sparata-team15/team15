@@ -83,7 +83,7 @@ public class BoardController {
     public ResponseEntity<?> getBoards(
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         List<BoardResponseDto> responseDtoList = boardService.getBoards(userDetails.getUser());
-        return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.BOARDS_READ_SUCCESS));
+        return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.BOARDS_READ_SUCCESS, responseDtoList));
     }
 
     /**

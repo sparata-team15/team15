@@ -40,8 +40,8 @@ public class BoardController {
     public ResponseEntity<?> createBoard(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @RequestBody @Valid BoardRequestDto requestDto) {
-        boardService.createBoard(requestDto, userDetails.getUser());
-        return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.BOARDS_CREATE_SUCCESS));
+        BoardResponseDto responseDto = boardService.createBoard(requestDto, userDetails.getUser());
+        return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.BOARDS_CREATE_SUCCESS, responseDto));
     }
 
     /**
@@ -57,9 +57,9 @@ public class BoardController {
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @RequestBody @Valid BoardRequestDto requestDto,
         @PathVariable Long boardId) {
-        boardService.updateBoard(boardId, requestDto,
+        BoardResponseDto responseDto = boardService.updateBoard(boardId, requestDto,
             userDetails.getUser());
-        return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.BOARDS_UPDATE_SUCCESS));
+        return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.BOARDS_UPDATE_SUCCESS, responseDto));
     }
 
     /**

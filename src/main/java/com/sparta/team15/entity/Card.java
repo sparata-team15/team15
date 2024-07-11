@@ -7,13 +7,43 @@ import jakarta.persistence.Id;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Entity
-@NoArgsConstructor
 @Getter
+@NoArgsConstructor
 public class Card {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long cardId;
 
+//    private Long userId;
+    private String author;
+
+    private Long columnId;
+
+    private String content;
+
+    private String description;
+
+    private Date date;
+
+    private int position;
+
+    public Card(String author, long columnId, String content, String description, Date date) {
+        this.author = author;
+        this.columnId = columnId;
+        this.content = content;
+        this.description = description;
+        this.date = date;
+    }
+
+    public void update(String author, String content, String description, Date date) {
+        this.author = author;
+        this.content = content;
+        this.description = description;
+        this.date = date;
+    }
 }
+

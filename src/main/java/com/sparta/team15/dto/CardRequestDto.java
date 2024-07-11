@@ -9,8 +9,9 @@ import java.util.Date;
 @Getter
 @NoArgsConstructor
 public class CardRequestDto {
-    private Long userId;
+    private String author;
 
+    @NotNull
     private Long columnId;
 
     @NotNull

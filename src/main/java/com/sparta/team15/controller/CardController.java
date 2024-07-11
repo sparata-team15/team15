@@ -3,6 +3,7 @@ package com.sparta.team15.controller;
 import com.sparta.team15.dto.CardRequestDto;
 import com.sparta.team15.dto.CardResponseDto;
 import com.sparta.team15.service.CardService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,7 +22,7 @@ public class CardController {
 
     // 카드 생성
     @PostMapping
-    public ResponseEntity<String> createCard(@RequestBody CardRequestDto requestDto) {
+    public ResponseEntity<String> createCard(@Valid @RequestBody CardRequestDto requestDto) {
         cardService.createCard(requestDto);
         return ResponseEntity.status(HttpStatus.OK).body("카드 생성 완료");
     }
@@ -42,11 +43,11 @@ public class CardController {
     }
 
     // 카드 작업자별 조회
-    @GetMapping("/{userId}")
-    public List<CardResponseDto> getCardsByUserId(@PathVariable Long userId,
+    @GetMapping("/{author}")
+    public List<CardResponseDto> getCardsByAuthor(@PathVariable String author,
                                                   @RequestParam(defaultValue = "0") int page,
                                                   @RequestParam(defaultValue = "5") int size) {
-        return cardService.getCardsByUserId(userId, page, size);
+        return cardService.getCardsByAuthor(author, page, size);
     }
 
     // 카드 수정

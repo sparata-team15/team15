@@ -5,13 +5,13 @@ import lombok.Getter;
 
 @Getter
 public class CardResponseDto {
-    private Long userId;
+    private String author;
     private Long columnId;
     private String content;
     private String description;
 
     public CardResponseDto(Card card) {
-        this.userId = card.getUserId();
+        this.author = card.getAuthor();
         this.columnId = card.getColumnId();
         this.content = card.getContent();
         this.description = card.getDescription();

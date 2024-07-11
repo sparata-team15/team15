@@ -23,7 +23,7 @@ public class CardService {
     // 카드 생성
     public void createCard(CardRequestDto requestDto) {
         Card card = new Card(
-                requestDto.getUserId(),
+                requestDto.getAuthor(),
                 requestDto.getColumnId(),
                 requestDto.getContent(),
                 requestDto.getDescription(),
@@ -51,11 +51,11 @@ public class CardService {
     }
 
     // 카드 작업자별 조회
-    public List<CardResponseDto> getCardsByUserId(Long userId, int page, int size) {
+    public List<CardResponseDto> getCardsByAuthor(String author, int page, int size) {
 
         Pageable pageable = PageRequest.of(page, size);
 
-        return cardRepository.findByUserId(userId, pageable).stream()
+        return cardRepository.findByAuthor(author, pageable).stream()
                 .map(CardResponseDto::new).toList();
     }
 
@@ -64,7 +64,7 @@ public class CardService {
         Card card = cardRepository.findById(cardId)
                 .orElseThrow(() -> new IllegalArgumentException("카드를 찾을 수 없습니다."));
 
-        card.update(requestDto.getUserId(), requestDto.getContent(), requestDto.getDescription(), requestDto.getDate());
+        card.update(requestDto.getAuthor(), requestDto.getContent(), requestDto.getDescription(), requestDto.getDate());
         cardRepository.save(card);
 
     }

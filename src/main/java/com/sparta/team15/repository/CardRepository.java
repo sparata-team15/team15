@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface CardRepository extends JpaRepository<Card, Long> {
 
-    List<Card> findByUserId(Long userId, Pageable pageable);
+    List<Card> findByAuthor(String author, Pageable pageable);
 
     List<Card> findByColumnId(Long columnId, Pageable pageable);
 }

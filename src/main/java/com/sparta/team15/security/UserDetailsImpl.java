@@ -2,7 +2,7 @@ package com.sparta.team15.security;
 
 
 import com.sparta.team15.entity.User;
-import com.sparta.team15.enums.UserRole;
+import com.sparta.team15.entity.UserRoleEnum;
 import java.util.ArrayList;
 import java.util.Collection;
 import lombok.Getter;
@@ -19,7 +19,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        UserRole role = user.getRole();
+        UserRoleEnum role = user.getRole();
         String authority = role.getAuthority();
 
         SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(authority);

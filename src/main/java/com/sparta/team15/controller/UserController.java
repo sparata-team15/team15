@@ -3,7 +3,6 @@ package com.sparta.team15.controller;
 import com.sparta.team15.dto.LoginRequestDto;
 import com.sparta.team15.dto.ResponseMessageDto;
 import com.sparta.team15.dto.SignUpRequestDto;
-import com.sparta.team15.dto.WithDrawUserRequestDto;
 import com.sparta.team15.enums.MessageEnum;
 import com.sparta.team15.service.UserService;
 import jakarta.validation.Valid;

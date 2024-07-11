@@ -2,6 +2,7 @@ package com.sparta.team15.controller;
 
 import com.sparta.team15.dto.BoardRequestDto;
 import com.sparta.team15.dto.BoardResponseDto;
+import com.sparta.team15.dto.ResponseMessageDto;
 import com.sparta.team15.enums.MessageEnum;
 import com.sparta.team15.security.UserDetailsImpl;
 import com.sparta.team15.service.BoardService;
@@ -38,8 +39,8 @@ public class BoardController {
     public ResponseEntity<?> createBoard(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @RequestBody @Valid BoardRequestDto requestDto) {
-        BoardResponseDto responseDto = boardService.createBoard(requestDto, userDetails.getUser());
-        return ResponseEntity.ok(MessageEnum.BOARDS_CREATE_SUCCESS);
+        boardService.createBoard(requestDto, userDetails.getUser());
+        return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.BOARDS_CREATE_SUCCESS));
     }
 
     /**
@@ -54,9 +55,9 @@ public class BoardController {
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @RequestBody @Valid BoardRequestDto requestDto,
         @PathVariable Long boardId) {
-        BoardResponseDto responseDto = boardService.updateBoard(boardId, requestDto,
+        boardService.updateBoard(boardId, requestDto,
             userDetails.getUser());
-        return ResponseEntity.ok(MessageEnum.BOARDS_UPDATE_SUCCESS);
+        return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.BOARDS_UPDATE_SUCCESS));
     }
 
     /**
@@ -70,7 +71,7 @@ public class BoardController {
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long boardId) {
         boardService.deleteBoard(boardId, userDetails.getUser());
-        return ResponseEntity.ok(MessageEnum.BOARDS_DELETE_SUCCESS);
+        return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.BOARDS_DELETE_SUCCESS));
     }
 
     /**
@@ -82,7 +83,7 @@ public class BoardController {
     public ResponseEntity<?> getBoards(
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         List<BoardResponseDto> responseDtoList = boardService.getBoards(userDetails.getUser());
-        return ResponseEntity.ok(MessageEnum.BOARDS_READ_SUCCESS);
+        return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.BOARDS_READ_SUCCESS));
     }
 
     /**
@@ -96,7 +97,7 @@ public class BoardController {
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long boardId)   {
         BoardResponseDto responseDto = boardService.getBoard(boardId, userDetails.getUser());
-        return ResponseEntity.ok(MessageEnum.BOARDS_READ_SUCCESS);
+        return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.BOARDS_READ_SUCCESS));
     }
 
     /**
@@ -110,7 +111,7 @@ public class BoardController {
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long boardId) {
         boardService.inviteUser(userDetails.getUser(), boardId);
-        return ResponseEntity.ok(MessageEnum.BOARDS_INVITE_SUCCESS);
+        return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.BOARDS_INVITE_SUCCESS));
     }
 
 

@@ -1,6 +1,5 @@
 package com.sparta.team15.controller;
 
-import com.sparta.team15.dto.LoginRequestDto;
 import com.sparta.team15.dto.ResponseMessageDto;
 import com.sparta.team15.dto.SignUpRequestDto;
 import com.sparta.team15.enums.MessageEnum;
@@ -8,9 +7,7 @@ import com.sparta.team15.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -29,16 +26,10 @@ public class UserController {
       return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.SIGNUP_SUCCESS));
   }
 
-  @PutMapping("/withDraw/{id}")
+  @PutMapping("/{id}")
   public ResponseEntity<ResponseMessageDto> withDraw(@PathVariable Long id, String password) {
     userService.withDraw(id, password);
     return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.WITHDRAW_SUCCESS_MESSAGE));
-  }
-
-  @PostMapping("/login")
-  public ResponseEntity<String> login(@Valid @RequestBody LoginRequestDto requestDto) {
-    userService.login(requestDto);
-    return ResponseEntity.ok().body("로그인 성공");
   }
 
   @PutMapping("/logout/{id}")
@@ -46,7 +37,6 @@ public class UserController {
     userService.logout(id);
     return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.LOGOUT_SUCCESS));
   }
-
 
 
 

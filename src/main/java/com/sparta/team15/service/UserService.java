@@ -29,7 +29,7 @@ public class UserService {
 
     public SignUpResponseDto signUp(SignUpRequestDto requestDto) {
         String username = requestDto.getUsername();
-        String password = requestDto.getPassword();
+        String password = passwordEncoder.encode(requestDto.getPassword());
 
         // 회원 중복 확인
         if (userRepository.findByUsername(username).isPresent()) {
@@ -87,8 +87,5 @@ public class UserService {
         if (!user.getRefreshToken().equals(refreshToken)) {
             throw new MismatchException(UserErrorCode.REFRESH_TOKEN_MISMATCH);
         }
-    }
-
-    public void login(LoginRequestDto requestDto) {
     }
 }

@@ -1,6 +1,8 @@
 package com.sparta.team15.controller;
 
+import com.sparta.team15.dto.BoardColumnOrderRequestDto;
 import com.sparta.team15.dto.BoardColumnRequestDto;
+import com.sparta.team15.dto.BoardColumnResponseDto;
 import com.sparta.team15.dto.ResponseMessageDto;
 import com.sparta.team15.entity.User;
 import com.sparta.team15.enums.MessageEnum;
@@ -20,22 +22,35 @@ public class BoardColumnController {
     private final BoardColumnService boardColumnService;
 
     @PostMapping
-    public ResponseEntity<ResponseMessageDto> addBoardColumn(@RequestBody @Valid BoardColumnRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        User loginUser = new User();
-        boardColumnService.addBoardColumn(requestDto, loginUser);
-        return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.COLUMN_CREATED));
+    public ResponseEntity<BoardColumnResponseDto> addBoardColumn(
+            @RequestBody @Valid BoardColumnRequestDto requestDto,
+            @AuthenticationPrincipal UserDetailsImpl userDetails){
+
+        User loginUser = userDetails.getUser();
+        BoardColumnResponseDto boardColumnResponseDto = boardColumnService.addBoardColumn(requestDto, loginUser);
+
+        return ResponseEntity.ok(boardColumnResponseDto);
     }
 
-    @DeleteMapping("/{boardId}")
-    public ResponseEntity<ResponseMessageDto> deleteBoardColumn(@PathVariable Long boardId){
-        User loginUser = new User();
-        boardColumnService.deleteBoardColumn(boardId, loginUser);
+    @DeleteMapping("/{columnId}")
+    public ResponseEntity<ResponseMessageDto> deleteBoardColumn(
+            @PathVariable Long columnId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails){
+
+        User loginUser = userDetails.getUser();
+        boardColumnService.deleteBoardColumn(columnId, loginUser);
         return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.COLUMN_DELETED));
     }
 
-    @PatchMapping("/order")
-    public ResponseEntity<ResponseMessageDto> updateBoardColumnPosition(){
+    @PatchMapping("/{columnId}/order")
+    public ResponseEntity<BoardColumnResponseDto> updateBoardColumnPosition(
+            @PathVariable Long columnId,
+            @RequestBody @Valid BoardColumnOrderRequestDto requestDto,
+            @AuthenticationPrincipal UserDetailsImpl userDetails){
 
-        return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.COLUMN_UPDATE_POSITION));
+        User loginUser = userDetails.getUser();
+        BoardColumnResponseDto boardColumnResponseDto = boardColumnService.updateBoardColumnOrder(columnId, requestDto, loginUser);
+
+        return ResponseEntity.ok(boardColumnResponseDto);
     }
 }

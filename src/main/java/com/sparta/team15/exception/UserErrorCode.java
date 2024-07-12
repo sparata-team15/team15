@@ -36,7 +36,10 @@ public enum UserErrorCode implements ErrorCode {
     INVALID_REQUEST(HttpStatus.BAD_REQUEST,
         "유효하지 않는 변경 요청 값 입니다."),
     NOT_FOUND_WORKER_IN_BOARD(HttpStatus.NOT_FOUND,
-        "해당 작업자가 존재하지 않습니다.");
+        "해당 작업자가 존재하지 않습니다."),
+    NOT_ACCEPTABLE_TO_MAKE_BOARD(HttpStatus.NOT_ACCEPTABLE,
+        "보드를 만들 수 없습니다.");
+
 
     private final HttpStatus status;
     private final String message;

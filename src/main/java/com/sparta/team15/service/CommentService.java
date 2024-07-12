@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class CommentService {
     private final CommentRepository commentRepository;
@@ -26,6 +26,7 @@ public class CommentService {
     private final UserRepository userRepository;
 
     // 댓글 생성
+    @Transactional
     public void createComment(UserDetailsImpl userDetails, Long cardId, CommentRequestDto requestDto) {
         User user = userRepository.findById(userDetails.getUser().getId())
                 .orElseThrow(() -> new IllegalArgumentException(MessageEnum.INVALID_USER_ID.getMessage()));
@@ -50,6 +51,7 @@ public class CommentService {
     }
 
     // 댓글 수정
+    @Transactional
     public void updateComment(UserDetailsImpl userDetails, Long commentId, CommentRequestDto requestDto) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException(MessageEnum.INVALID_COMMENT_ID.getMessage()));
@@ -63,6 +65,7 @@ public class CommentService {
     }
 
     // 댓글 삭제
+    @Transactional
     public void deleteComment(UserDetailsImpl userDetails, Long commentId) {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException(MessageEnum.INVALID_COMMENT_ID.getMessage()));

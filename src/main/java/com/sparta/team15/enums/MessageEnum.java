@@ -20,7 +20,16 @@ public enum MessageEnum {
     BOARDS_UPDATE_SUCCESS(HttpStatus.OK, "보드를 수정하였습니다."),
     BOARDS_READ_SUCCESS(HttpStatus.OK, "보드를 조회하였습니다."),
     BOARDS_DELETE_SUCCESS(HttpStatus.OK, "보드를 삭제하였습니다."),
-    BOARDS_INVITE_SUCCESS(HttpStatus.OK, "보드에 초대하였습니다.");
+    BOARDS_INVITE_SUCCESS(HttpStatus.OK, "보드에 초대하였습니다."),
+
+    // 댓글
+    COMMENT_CREATED(HttpStatus.CREATED, "댓글이 생성되었습니다."),
+    COMMENT_UPDATED(HttpStatus.OK, "댓글이 수정되었습니다."),
+    COMMENT_DELETED(HttpStatus.OK, "댓글이 삭제되었습니다."),
+    INVALID_COMMENT_ID(HttpStatus.NOT_FOUND, "유효하지 않은 댓글 ID입니다."),
+    UNAUTHORIZED_ACTION(HttpStatus.FORBIDDEN, "권한이 없습니다."),
+    INVALID_USER_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 사용자 ID입니다."),
+    INVALID_CARD_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 카드 ID입니다.");
 
 
     private final HttpStatus httpStatus;

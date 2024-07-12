@@ -41,6 +41,7 @@ public enum MessageEnum {
     CARD_UPDATED(HttpStatus.OK,"카드가 수정되었습니다."),
     CARD_DELETED(HttpStatus.OK,"카드가 삭제되었습니다."),
     CARD_UPDATE_POSITION(HttpStatus.OK,"카드가 이동되었습니다."),
+    INVALID_COLUMN_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 컬럼입니다."),
 
     //RefreshToken
     UPDATE_TOKEN_SUCCESS_MESSAGE(HttpStatus.OK,"토큰이 재발급되었습니다.");

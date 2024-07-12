@@ -5,6 +5,7 @@ import com.sparta.team15.dto.CardResponseDto;
 import com.sparta.team15.entity.BoardColumn;
 import com.sparta.team15.entity.Card;
 import com.sparta.team15.entity.User;
+import com.sparta.team15.enums.MessageEnum;
 import com.sparta.team15.repository.BoardColumnRepository;
 import com.sparta.team15.repository.CardRepository;
 import com.sparta.team15.security.UserDetailsImpl;
@@ -29,7 +30,7 @@ public class CardService {
     public void createCard(CardRequestDto requestDto, UserDetailsImpl userDetails) {
         User user = userDetails.getUser();
         BoardColumn boardColumn = boardColumnRepository.findById(requestDto.getColumnId())
-                .orElseThrow(() -> new IllegalArgumentException("컬럼을 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException(MessageEnum.INVALID_COLUMN_ID.getMessage()));
 
         Card card = new Card(
                 user,
@@ -56,7 +57,7 @@ public class CardService {
     public List<CardResponseDto> getCardsByStatus(Long columnId, int page, int size, UserDetailsImpl userDetails) {
         User user = userDetails.getUser();
         BoardColumn boardColumn = boardColumnRepository.findById(columnId)
-                .orElseThrow(() -> new IllegalArgumentException("컬럼을 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException(MessageEnum.INVALID_COLUMN_ID.getMessage()));
 
         Pageable pageable = PageRequest.of(page, size);
 
@@ -79,10 +80,10 @@ public class CardService {
         User user = userDetails.getUser();
 
         Card card = cardRepository.findById(cardId)
-                .orElseThrow(() -> new IllegalArgumentException("카드를 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException(MessageEnum.INVALID_CARD_ID.getMessage()));
 
-        if (card.getUser() != user) {
-            throw new IllegalArgumentException("본인이 작성한 카드만 수정할 수 있습니다.");
+        if (card.getUser().getId() != user.getId()) {
+            throw new IllegalArgumentException(MessageEnum.UNAUTHORIZED_ACTION.getMessage());
         }
 
         card.update(requestDto.getAuthor(), requestDto.getContent(), requestDto.getDescription(), requestDto.getDate());
@@ -95,10 +96,10 @@ public class CardService {
         User user = userDetails.getUser();
 
         Card card = cardRepository.findById(cardId)
-                .orElseThrow(() -> new IllegalArgumentException("카드를 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException(MessageEnum.INVALID_CARD_ID.getMessage()));
 
-        if (card.getUser() != user) {
-            throw new IllegalArgumentException("본인이 작성한 카드만 삭제할 수 있습니다.");
+        if (card.getUser().getId() != user.getId()) {
+            throw new IllegalArgumentException(MessageEnum.UNAUTHORIZED_ACTION.getMessage());
         }
 
         cardRepository.delete(card);

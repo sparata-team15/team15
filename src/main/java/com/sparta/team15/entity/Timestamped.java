@@ -21,7 +21,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public abstract class Timestamped {
 
     @CreatedDate
-    @jakarta.persistence.Column(updatable = false)
+    @Column(updatable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private String createdAt;
 

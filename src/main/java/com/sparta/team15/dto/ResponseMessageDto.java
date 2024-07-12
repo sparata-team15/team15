@@ -1,7 +1,9 @@
 package com.sparta.team15.dto;
 
 import com.sparta.team15.enums.MessageEnum;
+import lombok.Getter;
 
+@Getter
 public class ResponseMessageDto {
 
     private int status;
@@ -17,6 +19,5 @@ public class ResponseMessageDto {
         this.status = messageEnum.getHttpStatus().value();
         this.message = messageEnum.getMessage();
         this.data = data;
-        ;
     }
 }

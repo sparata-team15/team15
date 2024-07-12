@@ -106,8 +106,15 @@ public class CardService {
     }
 
     // 카드 순서 이동
-    public void updateCardPosition(Long cardId, UserDetailsImpl userDetails) {
+    public void updateCardPosition(Long cardId, CardRequestDto requestDto, UserDetailsImpl userDetails) {
         User user = userDetails.getUser();
+
+        Card card = cardRepository.findById(cardId)
+                .orElseThrow(() -> new IllegalArgumentException(MessageEnum.INVALID_CARD_ID.getMessage()));
+
+        card.updatePosition(requestDto.getPosition());
+        cardRepository.save(card);
+
 
     }
 

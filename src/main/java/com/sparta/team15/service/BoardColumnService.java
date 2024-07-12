@@ -2,6 +2,7 @@ package com.sparta.team15.service;
 
 import com.sparta.team15.dto.BoardColumnOrderRequestDto;
 import com.sparta.team15.dto.BoardColumnRequestDto;
+import com.sparta.team15.dto.BoardColumnResponseDto;
 import com.sparta.team15.entity.*;
 import com.sparta.team15.exception.BoardColumnErrorCode;
 import com.sparta.team15.exception.DuplicatedException;
@@ -25,15 +26,17 @@ public class BoardColumnService {
     private final BoardColumnRepository boardColumnRepository;
     private final BoardUserRepository boardUserRepository;
 
+
     /**
      * 컬럼 생성
      * @param requestDto
      * @param loginUser
+     * @return BoardColumnResponseDto
      */
-    public void addBoardColumn(BoardColumnRequestDto requestDto, User loginUser) {
+    public BoardColumnResponseDto addBoardColumn(BoardColumnRequestDto requestDto, User loginUser) {
 
         // 매니저 인지 확인
-        if(!loginUser.getRole().equals(UserRoleEnum.ADMIN)){
+        if(!loginUser.getRole().equals(UserRoleEnum.MANAGER)){
             throw new NotFoundException(BoardColumnErrorCode.NO_AUTHENTICATION);
         };
 
@@ -51,11 +54,15 @@ public class BoardColumnService {
         // TODO 포지션 중복
         BoardColumn boardColumn = new BoardColumn(requestDto, board);
 
-        boardColumnRepository.save(boardColumn);
+        BoardColumn savedBoardColumn = boardColumnRepository.save(boardColumn);
+
+        return new BoardColumnResponseDto(savedBoardColumn);
     }
 
     /**
      * 컬럼 삭제
+     * @param columnId
+     * @param loginUser
      */
     @Transactional
     public void deleteBoardColumn(Long columnId, User loginUser){
@@ -74,7 +81,7 @@ public class BoardColumnService {
         );
 
         // 매니저 인지 확인
-        if(!loginUser.getRole().equals(UserRoleEnum.ADMIN)){
+        if(!loginUser.getRole().equals(UserRoleEnum.MANAGER)){
             throw new NotFoundException(BoardColumnErrorCode.NO_AUTHENTICATION);
         };
 
@@ -83,9 +90,13 @@ public class BoardColumnService {
 
     /**
      * 컬럼 순서 이동
+     * @param columnId
+     * @param requestDto
+     * @param loginUser
+     * @return BoardColumnResponseDto
      */
     @Transactional
-    public void updateBoardColumnOrder(Long columnId, BoardColumnOrderRequestDto requestDto, User loginUser){
+    public BoardColumnResponseDto updateBoardColumnOrder(Long columnId, BoardColumnOrderRequestDto requestDto, User loginUser){
         // 컬럼 확인
         BoardColumn boardColumn = boardColumnRepository.findById(columnId).orElseThrow(
                 () -> new NotFoundException(BoardColumnErrorCode.NOT_FOUND_COLUMN));
@@ -101,12 +112,14 @@ public class BoardColumnService {
         );
 
         // 매니저 인지 확인
-        if(!loginUser.getRole().equals(UserRoleEnum.ADMIN)){
+        if(!loginUser.getRole().equals(UserRoleEnum.MANAGER)){
             throw new NotFoundException(BoardColumnErrorCode.NO_AUTHENTICATION);
         };
 
         // TODO: 포지션 중복 확인
         boardColumn.updatePosition(requestDto.getPosition());
+
+        return new BoardColumnResponseDto(boardColumn);
     }
 
     private Optional<BoardColumn> getBoardColumnByTitle(String title, Long boardId){

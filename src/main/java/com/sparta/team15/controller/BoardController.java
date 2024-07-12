@@ -37,7 +37,7 @@ public class BoardController {
      * @return
      */
     @PostMapping
-    public ResponseEntity<?> createBoard(
+    public ResponseEntity<ResponseMessageDto> createBoard(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @RequestBody @Valid BoardRequestDto requestDto) {
         BoardResponseDto responseDto = boardService.createBoard(requestDto, userDetails.getUser());
@@ -53,7 +53,7 @@ public class BoardController {
      * @return
      */
     @PatchMapping("/{boardId}")
-    public ResponseEntity<?> updateBoard(
+    public ResponseEntity<ResponseMessageDto> updateBoard(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @RequestBody @Valid BoardRequestDto requestDto,
         @PathVariable Long boardId) {
@@ -70,7 +70,7 @@ public class BoardController {
      * @return
      */
     @DeleteMapping("/{boardId}")
-    public ResponseEntity<?> deleteBoard(
+    public ResponseEntity<ResponseMessageDto> deleteBoard(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long boardId) {
         boardService.deleteBoard(boardId, userDetails.getUser());
@@ -84,7 +84,7 @@ public class BoardController {
      * @return
      */
     @GetMapping
-    public ResponseEntity<?> getBoards(
+    public ResponseEntity<ResponseMessageDto> getBoards(
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         List<BoardResponseDto> responseDtoList = boardService.getBoards(userDetails.getUser());
         return ResponseEntity.ok(
@@ -99,7 +99,7 @@ public class BoardController {
      * @return
      */
     @GetMapping("/{boardId}")
-    public ResponseEntity<?> getBoard(
+    public ResponseEntity<ResponseMessageDto> getBoard(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long boardId) {
         BoardResponseDto responseDto = boardService.getBoard(boardId, userDetails.getUser());
@@ -115,7 +115,7 @@ public class BoardController {
      * @return
      */
     @PostMapping("/{boardId}")
-    public ResponseEntity<?> inviteUser(
+    public ResponseEntity<ResponseMessageDto> inviteUser(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @PathVariable Long boardId) {
         boardService.inviteUser(userDetails.getUser(), boardId);

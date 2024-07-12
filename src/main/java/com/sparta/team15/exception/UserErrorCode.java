@@ -38,7 +38,13 @@ public enum UserErrorCode implements ErrorCode {
     NOT_FOUND_WORKER_IN_BOARD(HttpStatus.NOT_FOUND,
         "해당 작업자가 존재하지 않습니다."),
     NOT_ACCEPTABLE_TO_MAKE_BOARD(HttpStatus.NOT_ACCEPTABLE,
-        "보드를 만들 수 없습니다.");
+        "보드를 만들 수 없습니다."),
+
+    // Card
+    NOT_FOUND_CARD(HttpStatus.NOT_FOUND,
+                   "존재하지 않는 카드입니다."),
+    NOT_AUTHORIZATION_ABOUT_CARD(HttpStatus.FORBIDDEN,
+                   "해당 카드에 대한 권한이 없습니다.");
 
 
     private final HttpStatus status;

@@ -1,26 +1,30 @@
 package com.sparta.team15.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import java.util.Date;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.sql.Timestamp;
+import java.util.Date;
 
 @Entity
 @Getter
 @NoArgsConstructor
-public class Card {
+public class Card extends Timestamped{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long cardId;
 
-//    private Long userId;
-    private String author;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
-    private Long columnId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "column_id", nullable = false)
+    private BoardColumn boardColumn;
+
+    private String author;
 
     private String content;
 
@@ -30,9 +34,14 @@ public class Card {
 
     private int position;
 
-    public Card(String author, long columnId, String content, String description, Date date) {
+    private String createdAt;
+
+    private String modifiedAt;
+
+    public Card(User user, String author, BoardColumn boardColumn, String content, String description, Date date) {
+        this.user = user;
         this.author = author;
-        this.columnId = columnId;
+        this.boardColumn = boardColumn;
         this.content = content;
         this.description = description;
         this.date = date;

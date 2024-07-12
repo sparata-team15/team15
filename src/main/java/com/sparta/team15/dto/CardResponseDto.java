@@ -12,7 +12,7 @@ public class CardResponseDto {
 
     public CardResponseDto(Card card) {
         this.author = card.getAuthor();
-        this.columnId = card.getColumnId();
+        this.columnId = card.getBoardColumn().getId();
         this.content = card.getContent();
         this.description = card.getDescription();
     }

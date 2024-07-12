@@ -36,4 +36,8 @@ public class BoardColumn {
         this.title = requestDto.getTitle();
         this.position = requestDto.getPosition();
     }
+
+    public void updatePosition(Double position) {
+        this.position = position;
+    }
 }

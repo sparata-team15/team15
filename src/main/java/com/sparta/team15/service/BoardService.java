@@ -4,6 +4,9 @@ import com.sparta.team15.dto.BoardRequestDto;
 import com.sparta.team15.dto.BoardResponseDto;
 import com.sparta.team15.entity.Board;
 import com.sparta.team15.entity.User;
+import com.sparta.team15.exception.DuplicatedException;
+import com.sparta.team15.exception.NotFoundException;
+import com.sparta.team15.exception.UserErrorCode;
 import com.sparta.team15.repository.BoardRepository;
 import com.sparta.team15.repository.UserRepository;
 import java.util.List;
@@ -55,7 +58,7 @@ public class BoardService {
     public BoardResponseDto updateBoard(Long boardId, BoardRequestDto requestDto, User user) {
         Board board = getBoardAndAuth(user, boardId);
         if (requestDto.getTitle() == null) {
-            throw new IllegalArgumentException("커스텀 에러");
+            throw new NotFoundException(UserErrorCode.INVALID_REQUEST);
         }
         board.update(requestDto);
         return new BoardResponseDto(board);
@@ -107,7 +110,7 @@ public class BoardService {
         Board board = getBoardAndAuth(user, boardId);
         User invitedUser = userRepository.findById(user.getId()).get();
         if (boardUserService.isExistedUser(Optional.of(invitedUser), board)) {
-            throw new IllegalArgumentException("커스텀 에러");
+            throw new DuplicatedException(UserErrorCode.ALREADY_INVITED_USER);
         }
         boardUserService.saveUserToBoard(board, invitedUser);
 
@@ -124,7 +127,7 @@ public class BoardService {
         Board board = boardRepository.findById(boardId).orElse(null);
         Optional<User> isUser = userRepository.findById(user.getId());
         if (!boardUserService.isExistedUser(isUser, board)) {
-            throw new IllegalArgumentException("커스텀 에러");
+            throw new NotFoundException(UserErrorCode.NOT_FOUND_BOARD);
         }
         return board;
     }

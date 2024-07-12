@@ -1,7 +1,7 @@
 package com.sparta.team15.entity;
 
 public enum UserRoleEnum {
-    ADMIN(Authority.ADMIN),
+    MANAGER(Authority.MANAGER),
     USER(Authority.USER);
 
     private final String authority;
@@ -17,7 +17,7 @@ public enum UserRoleEnum {
 
     public static class Authority {
 
-        public static final String ADMIN = "ADMIN";
+        public static final String MANAGER = "MANAGER";
         public static final String USER = "USER";
     }
 }

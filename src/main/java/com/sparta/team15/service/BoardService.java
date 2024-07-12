@@ -20,10 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-/**
- * TODO N+1 발생할 수 있는 부분 찾기
- * TODO querydsl 변경 고려하기
- */
 @Slf4j
 @Service
 @RequiredArgsConstructor

@@ -1,10 +1,9 @@
 package com.sparta.team15.dto;
 
 import jakarta.validation.constraints.NotNull;
+import java.util.Date;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.Date;
 
 @Getter
 @NoArgsConstructor

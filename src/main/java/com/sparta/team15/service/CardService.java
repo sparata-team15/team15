@@ -11,6 +11,7 @@ import com.sparta.team15.exception.BoardColumnErrorCode;
 import com.sparta.team15.exception.NotFoundException;
 import com.sparta.team15.exception.UserErrorCode;
 import com.sparta.team15.repository.BoardColumnRepository;
+import com.sparta.team15.repository.BoardUserRepository;
 import com.sparta.team15.repository.CardRepository;
 import com.sparta.team15.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -29,12 +30,16 @@ public class CardService {
 
     private final CardRepository cardRepository;
     private final BoardColumnRepository boardColumnRepository;
+    private final BoardUserRepository boardUserRepository;
 
     // 카드 생성
     public void createCard(CardRequestDto requestDto, UserDetailsImpl userDetails) {
         User user = userDetails.getUser();
         BoardColumn boardColumn = boardColumnRepository.findById(requestDto.getColumnId())
                 .orElseThrow(() -> new NotFoundException(BoardColumnErrorCode.NOT_FOUND_COLUMN));
+
+        boardUserRepository.findByUserIdAndBoardId(user.getId(), boardColumn.getBoard().getId())
+                .orElseThrow(() -> new NotFoundException(BoardColumnErrorCode.NOT_TEAM_MEMBER));
 
         Card card = new Card(
                 user,

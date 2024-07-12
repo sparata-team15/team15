@@ -28,14 +28,14 @@ public class BoardColumnController {
     private final BoardColumnService boardColumnService;
 
     @PostMapping
-    public ResponseEntity<BoardColumnResponseDto> addBoardColumn(
+    public ResponseEntity<ResponseMessageDto> addBoardColumn(
             @RequestBody @Valid BoardColumnRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails){
 
         User loginUser = userDetails.getUser();
         BoardColumnResponseDto boardColumnResponseDto = boardColumnService.addBoardColumn(requestDto, loginUser);
 
-        return ResponseEntity.ok(boardColumnResponseDto);
+        return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.COLUMN_CREATED, boardColumnResponseDto));
     }
 
     @DeleteMapping("/{columnId}")
@@ -49,7 +49,7 @@ public class BoardColumnController {
     }
 
     @PatchMapping("/{columnId}/order")
-    public ResponseEntity<BoardColumnResponseDto> updateBoardColumnPosition(
+    public ResponseEntity<ResponseMessageDto> updateBoardColumnPosition(
             @PathVariable Long columnId,
             @RequestBody @Valid BoardColumnOrderRequestDto requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails){
@@ -57,6 +57,6 @@ public class BoardColumnController {
         User loginUser = userDetails.getUser();
         BoardColumnResponseDto boardColumnResponseDto = boardColumnService.updateBoardColumnOrder(columnId, requestDto, loginUser);
 
-        return ResponseEntity.ok(boardColumnResponseDto);
+        return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.COLUMN_DELETED, boardColumnResponseDto));
     }
 }

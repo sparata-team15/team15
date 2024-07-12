@@ -27,14 +27,14 @@ public class BoardColumnController {
     }
 
     @DeleteMapping("/{boardId}")
-    public ResponseEntity<?> deleteBoardColumn(@PathVariable Long boardId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public ResponseEntity<ResponseMessageDto> deleteBoardColumn(@PathVariable Long boardId){
         User loginUser = new User();
         boardColumnService.deleteBoardColumn(boardId, loginUser);
         return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.COLUMN_DELETED));
     }
 
     @PatchMapping("/order")
-    public ResponseEntity<?> updateBoardColumnPosition(){
+    public ResponseEntity<ResponseMessageDto> updateBoardColumnPosition(){
 
         return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.COLUMN_UPDATE_POSITION));
     }

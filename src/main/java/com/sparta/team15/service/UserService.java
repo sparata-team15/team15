@@ -1,6 +1,5 @@
 package com.sparta.team15.service;
 
-import com.sparta.team15.dto.LoginRequestDto;
 import com.sparta.team15.dto.SignUpRequestDto;
 import com.sparta.team15.dto.SignUpResponseDto;
 import com.sparta.team15.entity.User;
@@ -42,7 +41,7 @@ public class UserService {
             if (!MANAGER_TOKEN.equals(requestDto.getManagerToken())) {
                 throw new MismatchException(UserErrorCode.NOT_MANAGER);
             }
-            role = UserRoleEnum.ADMIN;
+            role = UserRoleEnum.MANAGER;
         }
 
         User user = new User(

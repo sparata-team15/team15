@@ -18,5 +18,7 @@ public class CardRequestDto {
 
     private String description;
 
+    private int position;
+
     private Date date;
 }

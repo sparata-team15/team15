@@ -122,7 +122,11 @@ public class BoardColumnService {
         return new BoardColumnResponseDto(boardColumn);
     }
 
+
+    //============ private methods ====================
     private Optional<BoardColumn> getBoardColumnByTitle(String title, Long boardId){
         return boardColumnRepository.findByTitleAndBoardId(title, boardId);
     }
+
+
 }

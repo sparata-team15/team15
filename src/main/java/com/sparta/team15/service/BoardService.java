@@ -4,6 +4,8 @@ import com.sparta.team15.dto.BoardRequestDto;
 import com.sparta.team15.dto.BoardResponseDto;
 import com.sparta.team15.entity.Board;
 import com.sparta.team15.entity.User;
+import com.sparta.team15.entity.UserRoleEnum;
+import com.sparta.team15.exception.AuthorizedException;
 import com.sparta.team15.exception.DuplicatedException;
 import com.sparta.team15.exception.NotFoundException;
 import com.sparta.team15.exception.UserErrorCode;
@@ -39,6 +41,9 @@ public class BoardService {
      */
     public BoardResponseDto createBoard(BoardRequestDto boardRequestDto, User user) {
         Optional<User> createdBy = userRepository.findById(user.getId());
+        if (createdBy.get().getRole() != UserRoleEnum.ADMIN) {
+            throw new AuthorizedException(UserErrorCode.NOT_AUTHORIZATION_ABOUT_BOARD);
+        }
         Board board = boardRepository.save(boardRequestDto.toEntity(createdBy.get()));
         boardUserService.saveUserToBoard(board, createdBy.get());
         return new BoardResponseDto(board);
@@ -129,5 +134,6 @@ public class BoardService {
         }
         return board;
     }
+
 
 }

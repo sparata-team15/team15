@@ -3,6 +3,8 @@ package com.sparta.team15.controller;
 import com.sparta.team15.dto.CardRequestDto;
 import com.sparta.team15.dto.CardResponseDto;
 import com.sparta.team15.security.UserDetailsImpl;
+import com.sparta.team15.dto.ResponseMessageDto;
+import com.sparta.team15.enums.MessageEnum;
 import com.sparta.team15.service.CardService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -27,7 +29,7 @@ public class CardController {
     public ResponseEntity<String> createCard(@Valid @RequestBody CardRequestDto requestDto,
                                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
         cardService.createCard(requestDto, userDetails);
-        return ResponseEntity.status(HttpStatus.OK).body("카드 생성 완료");
+        return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.CARD_CREATED));
     }
 
     // 카드 전체 목록 조회
@@ -62,7 +64,7 @@ public class CardController {
                                              @RequestBody CardRequestDto requestDto,
                                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
         cardService.updateCard(cardId, requestDto, userDetails);
-        return ResponseEntity.status(HttpStatus.OK).body("카드 수정 완료");
+        return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.CARD_UPDATED));
     }
 
     // 카드 삭제
@@ -70,7 +72,7 @@ public class CardController {
     public ResponseEntity<String> updateCard(@PathVariable Long cardId,
                                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
         cardService.deleteCard(cardId, userDetails);
-        return ResponseEntity.status(HttpStatus.OK).body("카드 삭제 완료");
+        return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.CARD_DELETED));
     }
 
     // 카드 순서 이동
@@ -78,7 +80,7 @@ public class CardController {
     public ResponseEntity<String> updateCardPosition(@PathVariable Long cardId,
                                                      @AuthenticationPrincipal UserDetailsImpl userDetails) {
         cardService.updateCardPosition(cardId, userDetails);
-        return ResponseEntity.status(HttpStatus.OK).body("카드 이동 완료");
+        return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.CARD_UPDATE_POSITION));
     }
 
 

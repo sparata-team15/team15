@@ -5,8 +5,6 @@ import com.sparta.team15.entity.User;
 import com.sparta.team15.entity.UserStatusEnum;
 import java.util.ArrayList;
 import java.util.Collection;
-
-
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

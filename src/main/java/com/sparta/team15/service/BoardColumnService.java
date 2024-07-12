@@ -6,10 +6,9 @@ import com.sparta.team15.entity.BoardColumn;
 import com.sparta.team15.entity.User;
 import com.sparta.team15.repository.BoardColumnRepository;
 import com.sparta.team15.repository.BoardRepository;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor

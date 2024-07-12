@@ -1,5 +1,6 @@
 package com.sparta.team15.service;
 
+import com.sparta.team15.dto.BoardInviteRequestDto;
 import com.sparta.team15.dto.BoardRequestDto;
 import com.sparta.team15.dto.BoardResponseDto;
 import com.sparta.team15.entity.Board;
@@ -13,13 +14,13 @@ import com.sparta.team15.repository.BoardRepository;
 import com.sparta.team15.repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * TODO 다른 브랜치 보면서 Entity간 연관관계 매핑 다시하기
  * TODO N+1 발생할 수 있는 부분 찾기
  * TODO querydsl 변경 고려하기
  */
@@ -41,8 +42,8 @@ public class BoardService {
      */
     public BoardResponseDto createBoard(BoardRequestDto boardRequestDto, User user) {
         Optional<User> createdBy = userRepository.findById(user.getId());
-        if (createdBy.get().getRole() != UserRoleEnum.ADMIN) {
-            throw new AuthorizedException(UserErrorCode.NOT_AUTHORIZATION_ABOUT_BOARD);
+        if (createdBy.get().getRole().equals(UserRoleEnum.USER)) {
+            throw new AuthorizedException(UserErrorCode.NOT_ACCEPTABLE_TO_MAKE_BOARD);
         }
         Board board = boardRepository.save(boardRequestDto.toEntity(createdBy.get()));
         boardUserService.saveUserToBoard(board, createdBy.get());
@@ -63,37 +64,53 @@ public class BoardService {
         if (requestDto.getTitle() == null) {
             throw new NotFoundException(UserErrorCode.INVALID_REQUEST);
         }
+        if (user.getRole().equals(UserRoleEnum.USER)) {
+            throw new AuthorizedException(UserErrorCode.NOT_AUTHORIZATION_ABOUT_BOARD);
+        }
         board.update(requestDto);
         return new BoardResponseDto(board);
     }
 
     /**
      * 보드 삭제
-     *
      * @param boardId
      * @param user
      */
     @Transactional
     public void deleteBoard(Long boardId, User user) {
         Board board = getBoardAndAuth(user, boardId);
+
+        if (user.getRole().equals(UserRoleEnum.USER)) {
+            throw new AuthorizedException(UserErrorCode.NOT_AUTHORIZATION_ABOUT_BOARD);
+        }
+
+        if (board.getIsDeleted()) {
+            throw new NotFoundException(UserErrorCode.NOT_FOUND_BOARD);
+        }
+
         board.deleteBoard();
         boardUserService.deleteBoardUsers(board);
     }
 
     /**
      * 모든 보드 조회
-     *
      * @param user
      * @return
      */
     public List<BoardResponseDto> getBoards(User user) {
-        List<Board> boards = boardRepository.findAllById(user.getId());
-        return boards.stream().map(BoardResponseDto::new).toList();
+        List<Long> boardIds = boardUserService.getBoardIdsByUserId(user.getId());
+
+        List<Board> boards = boardRepository.findAllByIdInAndIsDeletedFalse(boardIds);
+
+        List<BoardResponseDto> boardResponseDtos = boards.stream()
+            .map(BoardResponseDto::new)
+            .collect(Collectors.toList());
+
+        return boardResponseDtos;
     }
 
     /**
      * 단일 보드 조회
-     *
      * @param boardId
      * @param user
      * @return
@@ -109,14 +126,21 @@ public class BoardService {
      * @param user
      * @param boardId
      */
-    public void inviteUser(User user, Long boardId) {
+    public void inviteUser(User user, Long boardId, BoardInviteRequestDto requestDto) {
         Board board = getBoardAndAuth(user, boardId);
-        User invitedUser = userRepository.findById(user.getId()).get();
+
+        Optional<User> invitedUserOptional = userRepository.findById(requestDto.getUserId());
+        if (invitedUserOptional.isEmpty()) {
+            throw new NotFoundException(UserErrorCode.USER_NOT_FOUND);
+        }
+
+        User invitedUser = invitedUserOptional.get();
+
         if (boardUserService.isExistedUser(Optional.of(invitedUser), board)) {
             throw new DuplicatedException(UserErrorCode.ALREADY_INVITED_USER);
         }
-        boardUserService.saveUserToBoard(board, invitedUser);
 
+        boardUserService.saveUserToBoard(board, invitedUser);
     }
 
     /**
@@ -127,11 +151,15 @@ public class BoardService {
      * @return
      */
     private Board getBoardAndAuth(User user, Long boardId) {
-        Board board = boardRepository.findById(boardId).orElse(null);
+        Board board = boardRepository.findByIdAndIsDeletedFalse(boardId)
+            .orElseThrow(() -> new NotFoundException(UserErrorCode.NOT_FOUND_BOARD));
+
         Optional<User> isUser = userRepository.findById(user.getId());
+
         if (!boardUserService.isExistedUser(isUser, board)) {
             throw new NotFoundException(UserErrorCode.NOT_FOUND_BOARD);
         }
+
         return board;
     }
 

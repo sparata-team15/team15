@@ -1,13 +1,18 @@
 package com.sparta.team15.entity;
 
 import com.sparta.team15.dto.BoardRequestDto;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,14 +40,18 @@ public class Board extends Timestamped {
 
     private String modifiedAt;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User createdBy;
 
+    @OneToMany(mappedBy = "board", cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
+    private List<BoardUser> users = new ArrayList<>();
+
     @Builder
-    public Board(String title, String description) {
+    public Board(String title, String description, User createdBy) {
         this.title = title;
         this.description = description;
+        this.createdBy = createdBy;
     }
 
     public void update(BoardRequestDto requestDto) {

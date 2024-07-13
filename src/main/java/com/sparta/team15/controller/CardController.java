@@ -77,8 +77,9 @@ public class CardController {
     // 카드 순서 이동
     @PutMapping("/position/{cardId}")
     public ResponseEntity<ResponseMessageDto> updateCardPosition(@PathVariable Long cardId,
+                                                     @RequestBody CardRequestDto requestDto,
                                                      @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        cardService.updateCardPosition(cardId, userDetails);
+        cardService.updateCardPosition(cardId, requestDto, userDetails);
         return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.CARD_UPDATE_POSITION));
     }
 

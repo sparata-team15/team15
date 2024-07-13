@@ -1,5 +1,6 @@
 package com.sparta.team15.controller;
 
+import com.sparta.team15.dto.BoardInviteRequestDto;
 import com.sparta.team15.dto.BoardRequestDto;
 import com.sparta.team15.dto.BoardResponseDto;
 import com.sparta.team15.dto.ResponseMessageDto;
@@ -114,11 +115,12 @@ public class BoardController {
      * @param boardId
      * @return
      */
-    @PostMapping("/{boardId}")
+    @PostMapping("/{boardId}/invite")
     public ResponseEntity<ResponseMessageDto> inviteUser(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
-        @PathVariable Long boardId) {
-        boardService.inviteUser(userDetails.getUser(), boardId);
+        @PathVariable Long boardId,
+        @RequestBody BoardInviteRequestDto requestDto) {
+        boardService.inviteUser(userDetails.getUser(), boardId, requestDto);
         return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.BOARDS_INVITE_SUCCESS));
     }
 

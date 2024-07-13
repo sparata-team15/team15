@@ -15,6 +15,6 @@ public class BoardRequestDto {
     private String description;
 
     public Board toEntity(User createdBy) {
-        return Board.builder().title(title).description(description).build();
+        return Board.builder().title(title).description(description).createdBy(createdBy).build();
     }
 }

@@ -6,7 +6,12 @@ import com.sparta.team15.entity.BoardColumn;
 import com.sparta.team15.entity.Card;
 import com.sparta.team15.entity.User;
 import com.sparta.team15.enums.MessageEnum;
+import com.sparta.team15.exception.AuthorizedException;
+import com.sparta.team15.exception.BoardColumnErrorCode;
+import com.sparta.team15.exception.NotFoundException;
+import com.sparta.team15.exception.UserErrorCode;
 import com.sparta.team15.repository.BoardColumnRepository;
+import com.sparta.team15.repository.BoardUserRepository;
 import com.sparta.team15.repository.CardRepository;
 import com.sparta.team15.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -25,12 +30,16 @@ public class CardService {
 
     private final CardRepository cardRepository;
     private final BoardColumnRepository boardColumnRepository;
+    private final BoardUserRepository boardUserRepository;
 
     // 카드 생성
     public void createCard(CardRequestDto requestDto, UserDetailsImpl userDetails) {
         User user = userDetails.getUser();
         BoardColumn boardColumn = boardColumnRepository.findById(requestDto.getColumnId())
-                .orElseThrow(() -> new IllegalArgumentException(MessageEnum.INVALID_COLUMN_ID.getMessage()));
+                .orElseThrow(() -> new NotFoundException(BoardColumnErrorCode.NOT_FOUND_COLUMN));
+
+        boardUserRepository.findByUserIdAndBoardId(user.getId(), boardColumn.getBoard().getId())
+                .orElseThrow(() -> new NotFoundException(BoardColumnErrorCode.NOT_TEAM_MEMBER));
 
         Card card = new Card(
                 user,
@@ -57,7 +66,7 @@ public class CardService {
     public List<CardResponseDto> getCardsByStatus(Long columnId, int page, int size, UserDetailsImpl userDetails) {
         User user = userDetails.getUser();
         BoardColumn boardColumn = boardColumnRepository.findById(columnId)
-                .orElseThrow(() -> new IllegalArgumentException(MessageEnum.INVALID_COLUMN_ID.getMessage()));
+                .orElseThrow(() -> new NotFoundException(BoardColumnErrorCode.NOT_FOUND_COLUMN));
 
         Pageable pageable = PageRequest.of(page, size);
 
@@ -80,10 +89,10 @@ public class CardService {
         User user = userDetails.getUser();
 
         Card card = cardRepository.findById(cardId)
-                .orElseThrow(() -> new IllegalArgumentException(MessageEnum.INVALID_CARD_ID.getMessage()));
+                .orElseThrow(() -> new NotFoundException(UserErrorCode.NOT_FOUND_CARD));
 
         if (card.getUser().getId() != user.getId()) {
-            throw new IllegalArgumentException(MessageEnum.UNAUTHORIZED_ACTION.getMessage());
+            throw new AuthorizedException(UserErrorCode.NOT_AUTHORIZATION_ABOUT_CARD);
         }
 
         card.update(requestDto.getAuthor(), requestDto.getContent(), requestDto.getDescription(), requestDto.getDate());
@@ -96,18 +105,25 @@ public class CardService {
         User user = userDetails.getUser();
 
         Card card = cardRepository.findById(cardId)
-                .orElseThrow(() -> new IllegalArgumentException(MessageEnum.INVALID_CARD_ID.getMessage()));
+                .orElseThrow(() -> new NotFoundException(UserErrorCode.NOT_FOUND_CARD));
 
         if (card.getUser().getId() != user.getId()) {
-            throw new IllegalArgumentException(MessageEnum.UNAUTHORIZED_ACTION.getMessage());
+            throw new AuthorizedException(UserErrorCode.NOT_AUTHORIZATION_ABOUT_CARD);
         }
 
         cardRepository.delete(card);
     }
 
     // 카드 순서 이동
-    public void updateCardPosition(Long cardId, UserDetailsImpl userDetails) {
+    public void updateCardPosition(Long cardId, CardRequestDto requestDto, UserDetailsImpl userDetails) {
         User user = userDetails.getUser();
+
+        Card card = cardRepository.findById(cardId)
+                .orElseThrow(() -> new NotFoundException(UserErrorCode.NOT_FOUND_CARD));
+
+        card.updatePosition(requestDto.getPosition());
+        cardRepository.save(card);
+
 
     }
 

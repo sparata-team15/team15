@@ -21,6 +21,8 @@ public class CommentController {
 
     private final CommentService commentService;
 
+
+    //댓글 생성
     @PostMapping
     public ResponseEntity<ResponseMessageDto> createComment(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -30,12 +32,17 @@ public class CommentController {
         return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.COMMENT_CREATED));
     }
 
+
+
+    // 조회
     @GetMapping
     public ResponseEntity<List<CommentResponseDto>> getAllComments(@PathVariable Long cardId) {
         List<CommentResponseDto> comments = commentService.getAllComments(cardId);
         return ResponseEntity.ok(comments);
     }
 
+
+    //댓글 수정
     @PutMapping("/{commentId}")
     public ResponseEntity<ResponseMessageDto> updateComment(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -45,6 +52,8 @@ public class CommentController {
         return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.COMMENT_UPDATED));
     }
 
+
+    //댓글 삭제
     @DeleteMapping("/{commentId}")
     public ResponseEntity<ResponseMessageDto> deleteComment(
             @AuthenticationPrincipal UserDetailsImpl userDetails,

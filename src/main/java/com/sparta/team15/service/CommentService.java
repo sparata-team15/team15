@@ -55,7 +55,7 @@ public class CommentService {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException(MessageEnum.INVALID_COMMENT_ID.getMessage()));
 
-        if (!Long.valueOf(comment.getUser().getId()).equals(userDetails.getUser().getId())) {
+        if (comment.getUser().getId() != userDetails.getUser().getId()) {
             throw new IllegalStateException(MessageEnum.UNAUTHORIZED_ACTION.getMessage());
         }
 
@@ -69,7 +69,7 @@ public class CommentService {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException(MessageEnum.INVALID_COMMENT_ID.getMessage()));
 
-        if (!Long.valueOf(comment.getUser().getId()).equals(userDetails.getUser().getId())) {
+        if (comment.getUser().getId() != userDetails.getUser().getId()) {
             throw new IllegalStateException(MessageEnum.UNAUTHORIZED_ACTION.getMessage());
         }
 

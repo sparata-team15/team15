@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/boards/{boardId}/columns/{columnId}/cards/{cardId}/comments")
+@RequestMapping("/cards/{cardId}/comments")
 @RequiredArgsConstructor
 public class CommentController {
 

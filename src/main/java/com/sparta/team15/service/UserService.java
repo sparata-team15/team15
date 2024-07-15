@@ -32,10 +32,8 @@ public class UserService {
         String username = requestDto.getUsername();
         String password = passwordEncoder.encode(requestDto.getPassword());
 
-        // 회원 중복 확인
-        if (userRepository.findByUsername(username).isPresent()) {
-            throw new DuplicatedException(UserErrorCode.DUPLICATED_USER);
-        }
+
+        userDuplicatedCheck(requestDto);
 
         // 사용자 ROLE 확인
         UserRoleEnum role = UserRoleEnum.USER;
@@ -54,6 +52,12 @@ public class UserService {
         );
         userRepository.save(user);
         return new SignUpResponseDto(user);
+    }
+
+    private void userDuplicatedCheck(SignUpRequestDto requestDto) {
+        if (userRepository.findByUsername(requestDto.getUsername()).isPresent()) {
+            throw new DuplicatedException(UserErrorCode.DUPLICATED_USER);
+        }
     }
 
 

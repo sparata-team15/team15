@@ -40,8 +40,8 @@ public class UserController {
     @PatchMapping("/withdraw")
     public ResponseEntity<ResponseMessageDto> withDraw(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
-        @Valid @RequestBody WithDrawUserRequestDto requestdto) {
-        userService.withDraw(userDetails.getUser().getId(),requestdto.getPassword());
+        @Valid @RequestBody WithDrawUserRequestDto requestDto) {
+        userService.withDraw(userDetails.getUser().getId(),requestDto.getPassword());
         return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.WITHDRAW_SUCCESS_MESSAGE));
     }
 

@@ -13,8 +13,6 @@ import com.sparta.team15.exception.UserErrorCode;
 import com.sparta.team15.repository.BoardRepository;
 import com.sparta.team15.repository.UserRepository;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -41,12 +39,14 @@ public class BoardService {
      * @return
      */
     public BoardResponseDto createBoard(BoardRequestDto boardRequestDto, User user) {
-        Optional<User> createdBy = userRepository.findById(user.getId());
-        if (createdBy.get().getRole().equals(UserRoleEnum.USER)) {
+
+        User foundUser = userRepository.findById(user.getId())
+            .orElseThrow(() -> new NotFoundException(UserErrorCode.USER_NOT_FOUND));
+        if (foundUser.getRole().equals(UserRoleEnum.USER)) {
             throw new AuthorizedException(UserErrorCode.NOT_ACCEPTABLE_TO_MAKE_BOARD);
         }
-        Board board = boardRepository.save(boardRequestDto.toEntity(createdBy.get()));
-        boardUserService.saveUserToBoard(board, createdBy.get());
+        Board board = boardRepository.save(boardRequestDto.toEntity(foundUser));
+        boardUserService.saveUserToBoard(board, foundUser);
         return new BoardResponseDto(board);
     }
 
@@ -132,12 +132,8 @@ public class BoardService {
     public void inviteUser(User user, Long boardId, BoardInviteRequestDto requestDto) {
         Board board = getBoardAndAuth(user, boardId);
 
-        Optional<User> invitedUserOptional = userRepository.findById(requestDto.getUserId());
-        if (invitedUserOptional.isEmpty()) {
-            throw new NotFoundException(UserErrorCode.USER_NOT_FOUND);
-        }
-
-        User invitedUser = invitedUserOptional.get();
+        User invitedUser = userRepository.findById(requestDto.getUserId())
+            .orElseThrow(() -> new NotFoundException(UserErrorCode.USER_NOT_FOUND));
 
         if (boardUserService.isExistedUser(invitedUser, board)) {
             throw new DuplicatedException(UserErrorCode.ALREADY_INVITED_USER);

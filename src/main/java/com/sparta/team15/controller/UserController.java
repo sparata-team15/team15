@@ -71,7 +71,7 @@ public class UserController {
         String newAccessToken = jwtTokenHelper.createToken(username, statusEnum, roleEnum);
         return ResponseEntity.ok()
             .header(JwtTokenHelper.AUTHORIZATION_HEADER, newAccessToken)
-            .body(new ResponseMessageDto(MessageEnum.UPDATE_TOKEN_SUCCESS_MESSAGE,newAccessToken));
+            .body(new ResponseMessageDto(MessageEnum.UPDATE_TOKEN_SUCCESS_MESSAGE, newAccessToken));
     }
 
 }

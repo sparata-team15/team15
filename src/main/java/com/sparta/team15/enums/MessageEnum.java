@@ -32,19 +32,19 @@ public enum MessageEnum {
     INVALID_CARD_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 카드 ID입니다."),
 
     //boardColumn
-    COLUMN_CREATED(HttpStatus.OK,"컬럼이 생성되었습니다."),
-    COLUMN_DELETED(HttpStatus.OK,"컬럼이 삭제되었습니다."),
-    COLUMN_UPDATE_POSITION(HttpStatus.OK,"컬럼이 이동되었습니다."),
+    COLUMN_CREATED(HttpStatus.OK, "컬럼이 생성되었습니다."),
+    COLUMN_DELETED(HttpStatus.OK, "컬럼이 삭제되었습니다."),
+    COLUMN_UPDATE_POSITION(HttpStatus.OK, "컬럼이 이동되었습니다."),
 
     //Card
-    CARD_CREATED(HttpStatus.OK,"카드가 생성되었습니다."),
-    CARD_UPDATED(HttpStatus.OK,"카드가 수정되었습니다."),
-    CARD_DELETED(HttpStatus.OK,"카드가 삭제되었습니다."),
-    CARD_UPDATE_POSITION(HttpStatus.OK,"카드가 이동되었습니다."),
+    CARD_CREATED(HttpStatus.OK, "카드가 생성되었습니다."),
+    CARD_UPDATED(HttpStatus.OK, "카드가 수정되었습니다."),
+    CARD_DELETED(HttpStatus.OK, "카드가 삭제되었습니다."),
+    CARD_UPDATE_POSITION(HttpStatus.OK, "카드가 이동되었습니다."),
     INVALID_COLUMN_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 컬럼입니다."),
 
     //RefreshToken
-    UPDATE_TOKEN_SUCCESS_MESSAGE(HttpStatus.OK,"토큰이 재발급되었습니다.");
+    UPDATE_TOKEN_SUCCESS_MESSAGE(HttpStatus.OK, "토큰이 재발급되었습니다.");
 
     private final HttpStatus httpStatus;
     private final String message;

@@ -101,9 +101,8 @@ public class CardService {
 
     public CardResponseDto getCard(Long cardId, UserDetailsImpl userDetails) {
         findCard(cardId);
-
-        return cardRepository.findById(cardId).stream()
-                .map(CardResponseDto::new).toList();
+        Card card = findCard(cardId);
+        return new CardResponseDto(card);
     }
 
 }

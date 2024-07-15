@@ -93,9 +93,9 @@ public class CardController {
     // 카드 단일 조회
     @GetMapping("/{cardId}")
     public String getCard(@PathVariable Long cardId, @AuthenticationPrincipal UserDetailsImpl userDetails, Model model) {
-        CardRequestDto card = cardService.getCard(cardId,userDetails);
-        model.attribute("card",card);
-        return "cardsdetail";
+        CardResponseDto card = cardService.getCard(cardId,userDetails);
+        model.addAttribute("card",card);
+        return "/cardsdetail";
     }
 
 }

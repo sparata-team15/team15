@@ -3,14 +3,15 @@ package com.sparta.team15.controller;
 import com.sparta.team15.dto.BoardInviteRequestDto;
 import com.sparta.team15.dto.BoardRequestDto;
 import com.sparta.team15.dto.BoardResponseDto;
+import com.sparta.team15.dto.PageResponse;
 import com.sparta.team15.dto.ResponseMessageDto;
 import com.sparta.team15.enums.MessageEnum;
 import com.sparta.team15.security.UserDetailsImpl;
 import com.sparta.team15.service.BoardService;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -42,7 +44,8 @@ public class BoardController {
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @RequestBody @Valid BoardRequestDto requestDto) {
         BoardResponseDto responseDto = boardService.createBoard(requestDto, userDetails.getUser());
-        return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.BOARDS_CREATE_SUCCESS, responseDto));
+        return ResponseEntity.ok(
+            new ResponseMessageDto(MessageEnum.BOARDS_CREATE_SUCCESS, responseDto));
     }
 
     /**
@@ -60,7 +63,8 @@ public class BoardController {
         @PathVariable Long boardId) {
         BoardResponseDto responseDto = boardService.updateBoard(boardId, requestDto,
             userDetails.getUser());
-        return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.BOARDS_UPDATE_SUCCESS, responseDto));
+        return ResponseEntity.ok(
+            new ResponseMessageDto(MessageEnum.BOARDS_UPDATE_SUCCESS, responseDto));
     }
 
     /**
@@ -86,10 +90,12 @@ public class BoardController {
      */
     @GetMapping
     public ResponseEntity<ResponseMessageDto> getBoards(
-        @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        List<BoardResponseDto> responseDtoList = boardService.getBoards(userDetails.getUser());
-        return ResponseEntity.ok(
-            new ResponseMessageDto(MessageEnum.BOARDS_READ_SUCCESS, responseDtoList));
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @RequestParam(defaultValue = "0") int page,
+        @RequestParam(defaultValue = "5") int size) {
+        Page<BoardResponseDto> responseDtos = boardService.getBoards(userDetails.getUser(), page, size);
+        PageResponse<BoardResponseDto> response = new PageResponse<>(responseDtos);
+        return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.BOARDS_READ_SUCCESS, response));
     }
 
     /**

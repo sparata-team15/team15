@@ -4,6 +4,7 @@ import com.sparta.team15.entity.Board;
 import com.sparta.team15.entity.BoardUser;
 import com.sparta.team15.entity.User;
 import com.sparta.team15.repository.BoardUserRepository;
+import com.sparta.team15.repository.UserRepository;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -17,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class BoardUserService {
 
     private final BoardUserRepository boardUserRepository;
+    private final UserRepository userRepository;
 
     /**
      * 이미 초대한 유저인지 확인
@@ -25,8 +27,9 @@ public class BoardUserService {
      * @param board
      * @return
      */
-    public boolean isExistedUser(Optional<User> user, Board board) {
-        return boardUserRepository.existsByUserIdAndBoardId(user.get().getId(), board.getId());
+    public boolean isExistedUser(User user, Board board) {
+        // 유저가 존재하고 board와의 관계를 확인
+        return userRepository.existsById(user.getId()) && boardUserRepository.existsByUserAndBoard(user, board);
     }
 
     /**

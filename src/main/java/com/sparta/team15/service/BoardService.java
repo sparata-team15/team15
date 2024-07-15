@@ -73,6 +73,7 @@ public class BoardService {
 
     /**
      * 보드 삭제
+     *
      * @param boardId
      * @param user
      */
@@ -112,6 +113,7 @@ public class BoardService {
 
     /**
      * 단일 보드 조회
+     *
      * @param boardId
      * @param user
      * @return
@@ -137,7 +139,7 @@ public class BoardService {
 
         User invitedUser = invitedUserOptional.get();
 
-        if (boardUserService.isExistedUser(Optional.of(invitedUser), board)) {
+        if (boardUserService.isExistedUser(invitedUser, board)) {
             throw new DuplicatedException(UserErrorCode.ALREADY_INVITED_USER);
         }
 
@@ -152,12 +154,12 @@ public class BoardService {
      * @return
      */
     private Board getBoardAndAuth(User user, Long boardId) {
+        // board와 유저 존재 여부를 한 번에 확인
         Board board = boardRepository.findByIdAndIsDeletedFalse(boardId)
             .orElseThrow(() -> new NotFoundException(UserErrorCode.NOT_FOUND_BOARD));
 
-        Optional<User> isUser = userRepository.findById(user.getId());
-
-        if (!boardUserService.isExistedUser(isUser, board)) {
+        // boardUserService를 사용하여 user 권한 확인 및 유저 존재 여부 체크
+        if (!boardUserService.isExistedUser(user, board)) {
             throw new NotFoundException(UserErrorCode.NOT_FOUND_BOARD);
         }
 

@@ -17,4 +17,6 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     List<Board> findAllByIdInAndIsDeletedFalse(List<Long> boardIds);
 
     Page<Board> findAllByIdInAndIsDeletedFalse(List<Long> boardIds, Pageable pageable);
+
+    boolean existsByIdAndIsDeletedFalse(Long boardId);
 }

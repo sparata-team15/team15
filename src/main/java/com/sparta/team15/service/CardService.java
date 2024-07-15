@@ -36,7 +36,7 @@ public class CardService {
 
         //쿼리 최적화 추가
         boolean isExistBoardUser = boardUserRepository
-                .existsByUserIdAndBoardId(user.getId(), boardColumn.getBoard().getId());
+                .existsByUserAndBoard(user, boardColumn.getBoard());
         if (!isExistBoardUser) {
             throw new NotFoundException(BoardColumnErrorCode.NOT_TEAM_MEMBER);
         }

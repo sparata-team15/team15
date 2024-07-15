@@ -17,7 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
-///vdfsdfdff
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -32,12 +32,30 @@ public class UserService {
         String username = requestDto.getUsername();
         String password = passwordEncoder.encode(requestDto.getPassword());
 
-        // 회원 중복 확인
-        if (userRepository.findByUsername(username).isPresent()) {
-            throw new DuplicatedException(UserErrorCode.DUPLICATED_USER);
-        }
+        //회원 중복 확인
+        userDuplicatedCheck(requestDto);
 
         // 사용자 ROLE 확인
+        userRoleCheck(requestDto);
+
+        User user = new User(
+            username,
+            password,
+            requestDto.getName(),
+            userRoleCheck(requestDto)
+        );
+        userRepository.save(user);
+        return new SignUpResponseDto(user);
+    }
+
+    private void userDuplicatedCheck(SignUpRequestDto requestDto) {
+        final boolean isDuplicated = userRepository.existsByUsername(requestDto.getUsername());
+        if (isDuplicated) {
+            throw new DuplicatedException(UserErrorCode.DUPLICATED_USER);
+        }
+    }
+
+    private UserRoleEnum userRoleCheck(SignUpRequestDto requestDto) {
         UserRoleEnum role = UserRoleEnum.USER;
         if (requestDto.isManager()) {
             if (!MANAGER_TOKEN.equals(requestDto.getManagerToken())) {
@@ -45,15 +63,7 @@ public class UserService {
             }
             role = UserRoleEnum.MANAGER;
         }
-
-        User user = new User(
-            username,
-            password,
-            requestDto.getName(),
-            role
-        );
-        userRepository.save(user);
-        return new SignUpResponseDto(user);
+        return role;
     }
 
 
@@ -85,6 +95,7 @@ public class UserService {
         User user = userRepository.findByUsername(username).orElseThrow(
             () -> new NotFoundException(UserErrorCode.USER_NOT_FOUND)
         );
+
         if (!user.getRefreshToken().equals(refreshToken)) {
             throw new MismatchException(UserErrorCode.REFRESH_TOKEN_MISMATCH);
         }

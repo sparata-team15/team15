@@ -64,5 +64,5 @@ Authorization: {{Authorization}}
 Content-Type: application/json
 
 {
-    "userId" : "2"
+  "userId" : "2"
 }

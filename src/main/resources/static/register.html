@@ -3,8 +3,22 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Team Registration</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <title>회원가입 페이지</title>
+  <script src="https://cdn.tailwindcss.com">
+    function onclickAdmin() {
+      // Get the checkbox
+      var checkBox = document.getElementById("manager-check");
+      // Get the output text
+      var box = document.getElementById("manager-token");
+
+      // If the checkbox is checked, display the output text
+      if (checkBox.checked == true){
+        box.style.display = "block";
+      } else {
+        box.style.display = "none";
+      }
+    }
+  </script>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   <style>
     body {
@@ -28,17 +42,14 @@
       <label for="name" class="block text-gray-700 font-bold mb-2">Name</label>
       <input type="text" id="name" name="name" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="이름을 입력해주세요.">
     </div>
-    <div class="mb-4">
-      <label for="manager" class="block text-gray-700 font-bold mb-2">Manager</label>
-      <input type="text" id="manager" name="manager" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="매니저이면 true를 입력해주세요.">
+    <div>
+      <input id="manager-check" type="checkbox" name="manager" onclick="onclickAdmin()" style="margin-top: 40px;">매니저
+      <input id="manager-token" type="password" name="managerToken" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="매니저 암호" class="login-input-box" style="display:none">
     </div>
-    <div class="mb-4">
-      <label for="managerToken" class="block text-gray-700 font-bold mb-2">ManagerToken</label>
-      <input type="text" id="managerToken" name="managerToken" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" placeholder="매니저 토큰을 입력해주세요.">
-    </div>
+
     <div class="flex items-center justify-center">
       <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
-        Register
+        회원가입
       </button>
     </div>
   </form>

@@ -67,6 +67,7 @@
         const token = xhr.getResponseHeader('Authorization');
 
         Cookies.set('Authorization', token, {path: '/'})
+        localStorage.setItem('token', token);
 
         $.ajaxPrefilter(function (options, originalOptions, jqXHR) {
           jqXHR.setRequestHeader('Authorization', token);

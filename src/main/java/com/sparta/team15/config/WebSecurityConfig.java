@@ -35,7 +35,7 @@ public class WebSecurityConfig {
 
     @Bean
     public AuthenticationManager authenticationManager(
-        AuthenticationConfiguration configuration) throws Exception {
+            AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
     }
 
@@ -60,17 +60,20 @@ public class WebSecurityConfig {
 
         // 기본 설정인 Session 방식은 사용하지 않고 JWT 방식을 사용하기 위한 설정
         http.sessionManagement((sessionManagement) ->
-            sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         );
 
         http.authorizeHttpRequests((authorizeHttpRequests) ->
-            authorizeHttpRequests
-                .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
-                .permitAll() // resources 접근 허용 설정
-                .requestMatchers("/users/login", "/users", "/users/refresh", "/error")
-                .permitAll() // 메인 페이지 요청 허가
-                .requestMatchers(HttpMethod.GET).permitAll() // get요청  접근 허가
-                .anyRequest().authenticated() // 그 외 모든 요청 인증처리
+                authorizeHttpRequests
+                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
+                        .permitAll() // resources 접근 허용 설정
+                        .requestMatchers("/users/login", "/users", "/users/refresh", "/error").permitAll() // 메인 페이지 요청 허가
+
+                        .requestMatchers("/comments/**").permitAll() // 댓글 API 경로에 대해 인증 무시
+                        .requestMatchers("/cards/**").permitAll()
+
+                        .requestMatchers(HttpMethod.GET).permitAll() // get요청  접근
+                        .anyRequest().authenticated() // 그 외 모든 요청 인증처리
         );
 
         // 필터 관리

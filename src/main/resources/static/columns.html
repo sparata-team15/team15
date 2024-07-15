@@ -12,6 +12,9 @@
     .draggable {
       cursor: move;
     }
+    .drag-over {
+      border: 2px dashed #000;
+    }
   </style>
 </head>
 <body class="bg-gray-100 p-6">
@@ -19,84 +22,216 @@
   <header class="flex justify-between items-center mb-6">
     <h1 class="text-4xl font-bold">BOARD 1</h1>
     <div class="flex items-center space-x-4">
-      <button class="flex items-center bg-blue-500 text-white px-4 py-2 rounded">
-        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+      <button id="addColumnBtn" class="flex items-center bg-blue-500 text-white px-4 py-2 rounded">
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+        </svg>
         새 컬럼 추가
       </button>
       <div class="w-10 h-10 bg-gray-300 rounded-full"></div>
     </div>
   </header>
   <main class="flex space-x-4" id="columns">
-    <div class="bg-white p-4 rounded shadow w-1/3 draggable" draggable="true">
-      <h2 class="text-xl font-semibold mb-4">컬럼1</h2>
-      <div class="space-y-4">
-        <div class="bg-gray-200 p-4 rounded">카드</div>
-        <div class="bg-gray-200 p-4 rounded">카드</div>
-        <div class="bg-gray-200 p-4 rounded">카드</div>
-      </div>
-      <button class="flex items-center mt-4 text-blue-500">
-        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-        카드 추가
-      </button>
-    </div>
-    <div class="bg-white p-4 rounded shadow w-1/3 draggable" draggable="true">
-      <h2 class="text-xl font-semibold mb-4">컬럼2</h2>
-      <div class="space-y-4">
-        <div class="bg-gray-200 p-4 rounded">카드</div>
-      </div>
-      <button class="flex items-center mt-4 text-blue-500">
-        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-        카드 추가
-      </button>
-    </div>
-    <div class="bg-white p-4 rounded shadow w-1/3 draggable" draggable="true">
-      <h2 class="text-xl font-semibold mb-4">컬럼3</h2>
-      <button class="flex items-center mt-4 text-blue-500">
-        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-        카드 추가
-      </button>
-    </div>
+    <!-- 컬럼이 처음에는 없습니다 -->
   </main>
 </div>
-<script type="module">
-  document.addEventListener('DOMContentLoaded', () => {
-    const columns = document.querySelectorAll('.draggable');
-    const container = document.getElementById('columns');
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    const addColumnBtn = document.getElementById('addColumnBtn');
+    const columnsContainer = document.getElementById('columns');
+    const boardId = 1; // 현재 보드의 아이디 값을 설정합니다.
 
-    columns.forEach(column => {
-      column.addEventListener('dragstart', () => {
-        column.classList.add('dragging');
+    let dragSrcEl = null;
+
+    const handleDragStart = (e) => {
+      dragSrcEl = e.target;
+      e.target.style.opacity = '0.4';
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/html', e.target.innerHTML);
+    };
+
+    const handleDragEnd = async (e) => {
+      e.target.style.opacity = '1';
+      columnsContainer.querySelectorAll('.draggable').forEach((col) => {
+        col.classList.remove('drag-over');
       });
 
-      column.addEventListener('dragend', () => {
-        column.classList.remove('dragging');
-      });
-    });
 
-    container.addEventListener('dragover', e => {
+      // 드래그가 끝난 후 컬럼 순서를 업데이트합니다.
+      const updatedColumns = Array.from(columnsContainer.children).map((col, index) => {
+        col.setAttribute('data-position', index);
+        return {
+          columnId: col.id,
+          position: index
+        };
+      });
+
+      console.log(updatedColumns)
+
+      // 백엔드 API로 업데이트된 컬럼 순서를 전송합니다.
+      try {
+        const response = await fetch('http://localhost:8080/columns/updatePositions', {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem("token")
+          },
+          body: JSON.stringify(updatedColumns)
+        });
+
+        if (!response.ok) {
+          throw new Error('네트워크 응답이 올바르지 않습니다.');
+        }
+
+        console.log('컬럼 순서가 성공적으로 업데이트되었습니다.');
+      } catch (error) {
+        console.error('컬럼 순서를 업데이트하는 중 오류가 발생했습니다:', error);
+      }
+    };
+
+    const handleDragOver = (e) => {
+      if (e.preventDefault) {
+        e.preventDefault();
+      }
+      e.dataTransfer.dropEffect = 'move';
+      return false;
+    };
+
+    const handleDragEnter = (e) => {
+      e.target.classList.add('drag-over');
+    };
+
+    const handleDragLeave = (e) => {
+      e.target.classList.remove('drag-over');
+    };
+
+    const handleDrop = (e) => {
       e.preventDefault();
-      const afterElement = getDragAfterElement(container, e.clientX);
-      const dragging = document.querySelector('.dragging');
-      if (afterElement == null) {
-        container.appendChild(dragging);
-      } else {
-        container.insertBefore(dragging, afterElement);
+      if (dragSrcEl !== e.target) {
+        const srcPosition = dragSrcEl.getAttribute('data-position');
+        const targetPosition = e.target.getAttribute('data-position');
+
+        // 두 컬럼의 data-position 값을 서로 교환합니다.
+        dragSrcEl.setAttribute('data-position', targetPosition);
+        e.target.setAttribute('data-position', srcPosition);
+
+        // DOM에서 두 컬럼의 위치를 교환합니다.
+        const srcNextSibling = dragSrcEl.nextElementSibling === e.target ? dragSrcEl : dragSrcEl.nextElementSibling;
+        columnsContainer.insertBefore(dragSrcEl, e.target);
+        columnsContainer.insertBefore(e.target, srcNextSibling);
+      }
+    };
+
+    const enableDragAndDrop = (element) => {
+      element.addEventListener('dragstart', handleDragStart);
+      element.addEventListener('dragend', handleDragEnd);
+      element.addEventListener('dragover', handleDragOver);
+      element.addEventListener('dragenter', handleDragEnter);
+      element.addEventListener('dragleave', handleDragLeave);
+      element.addEventListener('drop', handleDrop);
+    };
+
+    const sortColumns = () => {
+      const columns = Array.from(columnsContainer.children);
+      columns.sort((a, b) => {
+        const positionA = parseInt(a.getAttribute('data-position'), 10);
+        const positionB = parseInt(b.getAttribute('data-position'), 10);
+        return positionA - positionB;
+      });
+      columns.forEach(column => columnsContainer.appendChild(column));
+    };
+
+    const fetchColumns = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/columns/boards/${boardId}`);
+        if (!response.ok) {
+          throw new Error('네트워크 응답이 올바르지 않습니다.');
+        }
+        const data = await response.json();
+        console.log('컬럼 데이터를 성공적으로 가져왔습니다:', data);
+
+        data.forEach(column => {
+          const { columnId, title, position } = column;
+
+          const newColumn = document.createElement('div');
+          newColumn.className = 'bg-white p-4 rounded shadow w-1/3 draggable';
+          newColumn.setAttribute('draggable', 'true');
+          newColumn.setAttribute('data-position', position);
+          newColumn.id = `${columnId}`;
+          newColumn.innerHTML = `
+                      <h2 class="text-xl font-semibold mb-4">${title}</h2>
+                      <div class="space-y-4">
+                        <!-- 카드가 여기에 추가될 수 있습니다 -->
+                      </div>
+                      <button class="flex items-center mt-4 text-blue-500">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                        카드 추가
+                      </button>
+                    `;
+          columnsContainer.appendChild(newColumn);
+          enableDragAndDrop(newColumn);
+        });
+
+        sortColumns();
+      } catch (error) {
+        console.error('컬럼 데이터를 가져오는 중 오류가 발생했습니다:', error);
+      }
+    };
+
+    addColumnBtn.addEventListener('click', async () => {
+      try {
+        const response = await fetch('http://localhost:8080/columns', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem("token")
+          },
+          body: JSON.stringify({
+            boardId: boardId,
+            title: `컬럼${columnsContainer.children.length+1}`,
+            position: columnsContainer.children.length
+          })
+        });
+
+        if (!response.ok) {
+          throw new Error('네트워크 응답이 올바르지 않습니다.');
+        }
+
+        const data = await response.json();
+        console.log('새 컬럼이 성공적으로 추가되었습니다:', data);
+
+        const { columnId, title, position } = data.data;
+
+        const newColumn = document.createElement('div');
+        newColumn.className = 'bg-white p-4 rounded shadow w-1/3 draggable';
+        newColumn.setAttribute('draggable', 'true');
+        newColumn.setAttribute('data-position', position);
+        newColumn.id = `${columnId}`;
+        newColumn.innerHTML = `
+                    <h2 class="text-xl font-semibold mb-4">${title}</h2>
+                    <div class="space-y-4">
+                        <!-- 카드가 여기에 추가될 수 있습니다 -->
+                    </div>
+                    <button class="flex items-center mt-4 text-blue-500">
+                        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                        </svg>
+                        카드 추가
+                    </button>
+                `;
+        columnsContainer.appendChild(newColumn);
+
+        enableDragAndDrop(newColumn);
+        sortColumns();
+        console.log(columnsContainer.children)
+      } catch (error) {
+        console.error('새 컬럼을 추가하는 중 오류가 발생했습니다:', error);
       }
     });
 
-    function getDragAfterElement(container, x) {
-      const draggableElements = [...container.querySelectorAll('.draggable:not(.dragging)')];
-
-      return draggableElements.reduce((closest, child) => {
-        const box = child.getBoundingClientRect();
-        const offset = x - box.left - box.width / 2;
-        if (offset < 0 && offset > closest.offset) {
-          return { offset: offset, element: child };
-        } else {
-          return closest;
-        }
-      }, { offset: Number.NEGATIVE_INFINITY }).element;
-    }
+    await fetchColumns();
   });
 </script>
 </body>

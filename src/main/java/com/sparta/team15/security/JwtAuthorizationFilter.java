@@ -22,31 +22,35 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
   private final JwtTokenHelper jwtTokenHelper;
   private final UserDetailsServiceImpl userDetailsService;
 
-  public JwtAuthorizationFilter(JwtTokenHelper jwtTokenHelper, UserDetailsServiceImpl userDetailsService) {
-    this.jwtTokenHelper = jwtTokenHelper;
-    this.userDetailsService = userDetailsService;
-  }
+    public JwtAuthorizationFilter(JwtTokenHelper jwtTokenHelper,
+        UserDetailsServiceImpl userDetailsService) {
+        this.jwtTokenHelper = jwtTokenHelper;
+        this.userDetailsService = userDetailsService;
+    }
 
-  @Override
-  protected void doFilterInternal(
-      HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
+    @Override
+    protected void doFilterInternal(
+        HttpServletRequest req, HttpServletResponse res, FilterChain filterChain)
+        throws ServletException, IOException {
 
-    String accessValue = jwtTokenHelper.getJwtFromHeader(req, JwtTokenHelper.AUTHORIZATION_HEADER);
-    String refreshValue = jwtTokenHelper.getJwtFromHeader(req, JwtTokenHelper.REFRESH_TOKEN_HEADER);
+        String accessValue = jwtTokenHelper.getJwtFromHeader(req,
+            JwtTokenHelper.AUTHORIZATION_HEADER);
+        String refreshValue = jwtTokenHelper.getJwtFromHeader(req,
+            JwtTokenHelper.REFRESH_TOKEN_HEADER);
 
-    log.info("access token {}", accessValue);
+    log.debug("access token {}", accessValue);
     if (StringUtils.hasText(accessValue)) {
       if (!jwtTokenHelper.validateToken(accessValue)) {
         log.error("AccessToken Error");
         return;
       }
 
-      if (StringUtils.hasText(refreshValue)) {
-        if (!jwtTokenHelper.validateToken(refreshValue)) {
-          log.error("RefreshToken Error");
-          return;
-        }
-      }
+            if (StringUtils.hasText(refreshValue)) {
+                if (!jwtTokenHelper.validateToken(refreshValue)) {
+                    log.error("RefreshToken Error");
+                    return;
+                }
+            }
 
       Claims info = jwtTokenHelper.getUserInfoFromToken(accessValue);
 

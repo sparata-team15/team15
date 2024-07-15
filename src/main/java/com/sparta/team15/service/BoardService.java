@@ -13,10 +13,12 @@ import com.sparta.team15.exception.UserErrorCode;
 import com.sparta.team15.repository.BoardRepository;
 import com.sparta.team15.repository.UserRepository;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,12 +39,14 @@ public class BoardService {
      * @return
      */
     public BoardResponseDto createBoard(BoardRequestDto boardRequestDto, User user) {
-        Optional<User> createdBy = userRepository.findById(user.getId());
-        if (createdBy.get().getRole().equals(UserRoleEnum.USER)) {
+
+        User foundUser = userRepository.findById(user.getId())
+            .orElseThrow(() -> new NotFoundException(UserErrorCode.USER_NOT_FOUND));
+        if (foundUser.getRole().equals(UserRoleEnum.USER)) {
             throw new AuthorizedException(UserErrorCode.NOT_ACCEPTABLE_TO_MAKE_BOARD);
         }
-        Board board = boardRepository.save(boardRequestDto.toEntity(createdBy.get()));
-        boardUserService.saveUserToBoard(board, createdBy.get());
+        Board board = boardRepository.save(boardRequestDto.toEntity(foundUser));
+        boardUserService.saveUserToBoard(board, foundUser);
         return new BoardResponseDto(board);
     }
 
@@ -69,6 +73,7 @@ public class BoardService {
 
     /**
      * 보드 삭제
+     *
      * @param boardId
      * @param user
      */
@@ -90,23 +95,25 @@ public class BoardService {
 
     /**
      * 모든 보드 조회
+     *
      * @param user
+     * @param page
+     * @param size
      * @return
      */
-    public List<BoardResponseDto> getBoards(User user) {
+    public Page<BoardResponseDto> getBoards(User user, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         List<Long> boardIds = boardUserService.getBoardIdsByUserId(user.getId());
+        Page<Board> boards = boardRepository.findAllByIdInAndIsDeletedFalse(boardIds, pageable);
 
-        List<Board> boards = boardRepository.findAllByIdInAndIsDeletedFalse(boardIds);
-
-        List<BoardResponseDto> boardResponseDtos = boards.stream()
-            .map(BoardResponseDto::new)
-            .collect(Collectors.toList());
+        Page<BoardResponseDto> boardResponseDtos = boards.map(BoardResponseDto::new);
 
         return boardResponseDtos;
     }
 
     /**
      * 단일 보드 조회
+     *
      * @param boardId
      * @param user
      * @return
@@ -125,14 +132,10 @@ public class BoardService {
     public void inviteUser(User user, Long boardId, BoardInviteRequestDto requestDto) {
         Board board = getBoardAndAuth(user, boardId);
 
-        Optional<User> invitedUserOptional = userRepository.findById(requestDto.getUserId());
-        if (invitedUserOptional.isEmpty()) {
-            throw new NotFoundException(UserErrorCode.USER_NOT_FOUND);
-        }
+        User invitedUser = userRepository.findById(requestDto.getUserId())
+            .orElseThrow(() -> new NotFoundException(UserErrorCode.USER_NOT_FOUND));
 
-        User invitedUser = invitedUserOptional.get();
-
-        if (boardUserService.isExistedUser(Optional.of(invitedUser), board)) {
+        if (boardUserService.isExistedUser(invitedUser, board)) {
             throw new DuplicatedException(UserErrorCode.ALREADY_INVITED_USER);
         }
 
@@ -147,12 +150,12 @@ public class BoardService {
      * @return
      */
     private Board getBoardAndAuth(User user, Long boardId) {
+        // board와 유저 존재 여부를 한 번에 확인
         Board board = boardRepository.findByIdAndIsDeletedFalse(boardId)
             .orElseThrow(() -> new NotFoundException(UserErrorCode.NOT_FOUND_BOARD));
 
-        Optional<User> isUser = userRepository.findById(user.getId());
-
-        if (!boardUserService.isExistedUser(isUser, board)) {
+        // boardUserService를 사용하여 user 권한 확인 및 유저 존재 여부 체크
+        if (!boardUserService.isExistedUser(user, board)) {
             throw new NotFoundException(UserErrorCode.NOT_FOUND_BOARD);
         }
 

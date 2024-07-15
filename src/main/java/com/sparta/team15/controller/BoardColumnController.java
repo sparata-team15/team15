@@ -32,15 +32,17 @@ public class BoardColumnController {
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         User loginUser = userDetails.getUser();
-        BoardColumnResponseDto boardColumnResponseDto = boardColumnService.addBoardColumn(requestDto, loginUser);
+        BoardColumnResponseDto boardColumnResponseDto = boardColumnService.addBoardColumn(
+            requestDto, loginUser);
 
-        return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.COLUMN_CREATED, boardColumnResponseDto));
+        return ResponseEntity.ok(
+            new ResponseMessageDto(MessageEnum.COLUMN_CREATED, boardColumnResponseDto));
     }
 
     @DeleteMapping("/{columnId}")
     public ResponseEntity<ResponseMessageDto> deleteBoardColumn(
-            @PathVariable Long columnId,
-            @AuthenticationPrincipal UserDetailsImpl userDetails){
+        @PathVariable Long columnId,
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
 
         User loginUser = userDetails.getUser();
         boardColumnService.deleteBoardColumn(columnId, loginUser);
@@ -56,7 +58,8 @@ public class BoardColumnController {
         User loginUser = userDetails.getUser();
         BoardColumnResponseDto boardColumnResponseDto = boardColumnService.updateBoardColumnOrder(requestDto, loginUser);
 
-        return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.COLUMN_DELETED, boardColumnResponseDto));
+        return ResponseEntity.ok(
+            new ResponseMessageDto(MessageEnum.COLUMN_DELETED, boardColumnResponseDto));
     }
 
     @GetMapping("/boards/{boardId}")

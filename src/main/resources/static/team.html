@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Team Creation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 p-8">
+<div class="max-w-4xl mx-auto bg-white p-8 rounded-lg shadow-lg">
+  <h1 class="text-4xl font-bold mb-8 text-center">TEAM TITLE</h1>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div>
+      <label for="board-name" class="block text-lg font-semibold mb-2">보드 이름</label>
+      <input type="text" id="board-name" class="w-full p-3 border border-gray-300 rounded-lg" placeholder="이름을 입력해주세요">
+    </div>
+    <div>
+      <label for="board-description" class="block text-lg font-semibold mb-2">보드 설명</label>
+      <input type="text" id="board-description" class="w-full p-3 border border-gray-300 rounded-lg" placeholder="설명을 입력해주세요.">
+    </div>
+    <div>
+      <label for="nickname" class="block text-lg font-semibold mb-2">팀원</label>
+      <input type="text" id="nickname" class="w-full p-3 border border-gray-300 rounded-lg" placeholder="닉네임을 입력해주세요">
+    </div>
+    <div class="flex items-end">
+      <button class="bg-blue-500 text-white px-6 py-3 rounded-lg">초대</button>
+    </div>
+  </div>
+  <div class="mt-8 text-center">
+    <button class="bg-green-500 text-white px-8 py-4 rounded-lg text-xl">팀 생성</button>
+  </div>
+</div>
+</body>
+</html>

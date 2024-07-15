@@ -16,16 +16,16 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-  private final UserRepository userRepository;
+    private final UserRepository userRepository;
 
-  @Override
-  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-    User user = userRepository.findByUsername(username)
-        .orElseThrow(() -> new NotFoundException(UserErrorCode.USER_NOT_FOUND));
-    if (user.getStatus() == UserStatusEnum.NON_USER) {
-      throw new MismatchException(UserErrorCode.WITHDRAW_USER);
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username)
+            .orElseThrow(() -> new NotFoundException(UserErrorCode.USER_NOT_FOUND));
+        if (user.getStatus() == UserStatusEnum.NON_USER) {
+            throw new MismatchException(UserErrorCode.WITHDRAW_USER);
+        }
+
+        return new UserDetailsImpl(user);
     }
-
-    return new UserDetailsImpl(user);
-  }
 }

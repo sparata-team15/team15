@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -57,9 +58,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     UserStatusEnum status = ((UserDetailsImpl)authResult.getPrincipal()).getUser().getStatus();
     UserRoleEnum role = ((UserDetailsImpl)authResult.getPrincipal()).getUser().getRole();
 
-    log.info("username: {}", username);
-    log.info("status: {}", status);
-    log.info("role: {}", role);
+    log.debug("username: {}", username);
+    log.debug("status: {}", status);
+    log.debug("role: {}", role);
 
     String accessToken = jwtTokenHelper.createToken(username, status, role);
     String refreshToken = jwtTokenHelper.createRefreshToken();
@@ -67,10 +68,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     response.addHeader(JwtTokenHelper.REFRESH_TOKEN_HEADER, refreshToken);
     jwtTokenHelper.saveRefreshToken(username, refreshToken);
 
-    response.setContentType("application/json");
+    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
     response.setCharacterEncoding("UTF-8");
     response.getWriter().write(new ObjectMapper()
-        .writeValueAsString(new ResponseMessageDto(MessageEnum.LOGIN_SUCCESS.LOGIN_SUCCESS)));
+        .writeValueAsString(new ResponseMessageDto(MessageEnum.LOGIN_SUCCESS)));
     response.getWriter().flush();
 
   }
@@ -79,7 +80,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
   protected void unsuccessfulAuthentication(HttpServletRequest request,
       HttpServletResponse response, AuthenticationException failed) throws IOException {
 
-    response.setStatus(401);
+    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
     response.setCharacterEncoding("utf-8");
     response.getWriter().write("상태 : " + response.getStatus() + ", 로그인 실패");

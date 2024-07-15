@@ -127,4 +127,11 @@ public class CardService {
                 .orElseThrow(() -> new NotFoundException(UserErrorCode.NOT_FOUND_CARD));
     }
 
+    public List<CardResponseDto> getCard(Long cardId, UserDetailsImpl userDetails) {
+        findCard(cardId);
+
+        return cardRepository.findById(cardId).stream()
+                .map(CardResponseDto::new).toList();
+    }
+
 }

@@ -60,7 +60,7 @@ public class CardController {
     }
 
     // 카드 작업자별 조회
-    @GetMapping("/{author}")
+    @GetMapping("/author/{author}")
     public List<CardResponseDto> getCardsByAuthor(@PathVariable String author,
                                                   @RequestParam @Min(1) int page,
                                                   @RequestParam @Min(1) @Max(5) int size,
@@ -92,6 +92,12 @@ public class CardController {
         @AuthenticationPrincipal UserDetailsImpl userDetails) {
         cardService.updateCardPosition(cardId, requestDto, userDetails);
         return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.CARD_UPDATE_POSITION));
+    }
+
+    // 카드 단일 조회
+    @GetMapping("/{cardId}")
+    public List<CardResponseDto> getCard(@PathVariable Long cardId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return cardService.getCard(cardId, userDetails);
     }
 
 

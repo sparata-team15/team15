@@ -46,12 +46,11 @@ public class BoardColumnService {
         );
 
         // 이미 존재하는 상태 이름인지 확인 후 예외처리
-        Optional<BoardColumn> boardColumnByTitle = getBoardColumnByTitle(requestDto.getTitle(), requestDto.getBoardId());
-        if(boardColumnByTitle.isPresent()){
-            throw new DuplicatedException(BoardColumnErrorCode.DUPLICATED_COLUMN_NAME);
-        }
 
-        // TODO 포지션 중복
+        if(boardColumnRepository.existsBoardColumnByTitleAndBoardId(requestDto.getTitle(), requestDto.getBoardId())){
+            throw new DuplicatedException(BoardColumnErrorCode.DUPLICATED_COLUMN_NAME);
+        };
+
         BoardColumn boardColumn = new BoardColumn(requestDto, board);
 
         BoardColumn savedBoardColumn = boardColumnRepository.save(boardColumn);
@@ -116,17 +115,8 @@ public class BoardColumnService {
             throw new NotFoundException(BoardColumnErrorCode.NO_AUTHENTICATION);
         };
 
-        // TODO: 포지션 중복 확인
         boardColumn.updatePosition(requestDto.getPosition());
 
         return new BoardColumnResponseDto(boardColumn);
     }
-
-
-    //============ private methods ====================
-    private Optional<BoardColumn> getBoardColumnByTitle(String title, Long boardId){
-        return boardColumnRepository.findByTitleAndBoardId(title, boardId);
-    }
-
-
 }

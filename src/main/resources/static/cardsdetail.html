@@ -10,6 +10,15 @@
     body {
       font-family: 'Roboto', sans-serif;
     }
+    .comment {
+      border-bottom: 1px solid #e5e7eb;
+      padding-bottom: 1rem;
+      margin-bottom: 1rem;
+    }
+    .comment:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
   </style>
 </head>
 <body class="bg-gray-100 p-8">
@@ -55,11 +64,12 @@
         <textarea id="commentContent" class="w-full p-2 border border-gray-300 rounded" placeholder="내용을 입력해주세요"></textarea>
         <button id="submitComment" class="bg-blue-500 text-white px-4 py-2 rounded mt-2">댓글 달기</button>
       </div>
-      <div id="commentList">
-      </div>
+      <div id="commentList"></div>
     </div>
   </div>
 </div>
+
+<input type="hidden" id="userId" value="1">
 <script src="cardsdetail.js"></script>
 </body>
 </html>

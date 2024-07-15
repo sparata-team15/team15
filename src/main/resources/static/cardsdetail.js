@@ -1,7 +1,13 @@
 document.addEventListener("DOMContentLoaded", function() {
-    const cardId = 1;
+    const urlParams = new URLSearchParams(window.location.search);
+    const cardId = urlParams.get('cardId');
+    const userId = document.getElementById('userId').value;
 
-    // 댓글 조회
+    if (!cardId) {
+        alert('카드 ID를 찾을 수 없습니다.');
+        return;
+    }
+
     function fetchComments(page = 0) {
         fetch(`/comments?cardId=${cardId}&page=${page}`)
             .then(response => response.json())
@@ -10,12 +16,12 @@ document.addEventListener("DOMContentLoaded", function() {
                 commentList.innerHTML = '';
                 data.content.forEach(comment => {
                     const commentDiv = document.createElement('div');
-                    commentDiv.classList.add('mb-4', 'p-4', 'border', 'border-gray-300', 'rounded');
+                    commentDiv.classList.add('comment');
                     commentDiv.innerHTML = `
-            <p class="mb-2">${comment.content}</p>
-            <p class="text-gray-600 text-sm">${comment.author}</p>
-            <button class="delete-comment text-red-500" data-id="${comment.id}">삭제</button>
-          `;
+                        <p class="mb-2">${comment.content}</p>
+                        <p class="text-gray-600 text-sm">${comment.author}</p>
+                        <button class="delete-comment text-red-500" data-id="${comment.commentId}">삭제</button>
+                    `;
                     commentList.appendChild(commentDiv);
                 });
 
@@ -28,7 +34,6 @@ document.addEventListener("DOMContentLoaded", function() {
             });
     }
 
-    // 댓글 생성
     function submitComment() {
         const content = document.getElementById('commentContent').value;
         fetch('/comments', {
@@ -38,6 +43,7 @@ document.addEventListener("DOMContentLoaded", function() {
             },
             body: JSON.stringify({
                 content: content,
+                userId: userId,
                 cardId: cardId
             })
         })
@@ -48,7 +54,6 @@ document.addEventListener("DOMContentLoaded", function() {
             });
     }
 
-    // 댓글 삭제
     function deleteComment(commentId) {
         fetch(`/comments/${commentId}?cardId=${cardId}`, {
             method: 'DELETE'

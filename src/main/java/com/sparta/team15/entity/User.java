@@ -55,6 +55,8 @@ public class User extends Timestamped {
         this.name = name;
         this.status = UserStatusEnum.USER;
         this.role = role;
+        this.createdAt = getCreatedAt();
+        this.modifiedAt = getModifiedAt();
     }
 
     public void withDraw() {

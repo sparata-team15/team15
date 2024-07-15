@@ -6,16 +6,15 @@ import com.sparta.team15.entity.Card;
 import com.sparta.team15.entity.Comment;
 import com.sparta.team15.entity.User;
 import com.sparta.team15.enums.MessageEnum;
+import com.sparta.team15.repository.CardRepository;
 import com.sparta.team15.repository.CommentRepository;
 import com.sparta.team15.repository.UserRepository;
 import com.sparta.team15.security.UserDetailsImpl;
-import com.sparta.team15.repository.CardRepository;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Service
 @Transactional(readOnly = true)

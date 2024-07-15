@@ -49,6 +49,14 @@ public class GlobalExceptionController extends ResponseEntityExceptionHandler {
     }
 
 
+    // AuthorizedException 예외처리
+    @ExceptionHandler(AuthorizedException.class)
+    public ResponseEntity<Object> handleCustomException(AuthorizedException e) {
+        log.warn("Authorized Exception");
+        ErrorCode errorCode = e.getErrorCode();
+        return handleExceptionInternal(errorCode, e);
+    }
+
     // MethodArgumentNotValidException 예외처리
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(

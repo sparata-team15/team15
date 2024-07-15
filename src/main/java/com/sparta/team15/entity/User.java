@@ -3,6 +3,7 @@ package com.sparta.team15.entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -44,7 +45,7 @@ public class User extends Timestamped {
 
     private String statusUpdate;
 
-    @OneToMany(mappedBy = "createdBy")
+    @OneToMany(mappedBy = "createdBy", fetch = FetchType.LAZY)
     private List<Board> boardList = new ArrayList<>();
 
 
@@ -54,6 +55,8 @@ public class User extends Timestamped {
         this.name = name;
         this.status = UserStatusEnum.USER;
         this.role = role;
+        this.createdAt = getCreatedAt();
+        this.modifiedAt = getModifiedAt();
     }
 
     public void withDraw() {

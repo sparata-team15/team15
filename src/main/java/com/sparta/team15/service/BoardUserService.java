@@ -6,6 +6,7 @@ import com.sparta.team15.entity.User;
 import com.sparta.team15.repository.BoardUserRepository;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,5 +52,17 @@ public class BoardUserService {
         for (BoardUser boardUser : boardUsers) {
             boardUser.delete();
         }
+    }
+
+    public List<Long> getBoardIdsByUserId(Long userId) {
+        List<BoardUser> boardUsers = boardUserRepository.findAllByUser_Id(userId);
+
+        // Extract boardIds from BoardUser entities
+        List<Long> boardIds = boardUsers.stream()
+            .map(BoardUser::getBoard)
+            .map(Board::getId)
+            .collect(Collectors.toList());
+
+        return boardIds;
     }
 }

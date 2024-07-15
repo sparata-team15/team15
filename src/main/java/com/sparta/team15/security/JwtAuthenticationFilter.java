@@ -21,67 +21,69 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Slf4j(topic = "로그인 및 JWT 생성")
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
-  private final JwtTokenHelper jwtTokenHelper;
 
-  public JwtAuthenticationFilter(JwtTokenHelper jwtTokenHelper) {
-    this.jwtTokenHelper = jwtTokenHelper;
-    setFilterProcessesUrl("/users/login");
-  }
+    private final JwtTokenHelper jwtTokenHelper;
 
-  @Override
-  public Authentication attemptAuthentication(HttpServletRequest request,
-      HttpServletResponse response) throws AuthenticationException {
-    try {
-      LoginRequestDto requestDto = new ObjectMapper().readValue(
-          request.getInputStream(), LoginRequestDto.class);
-
-      return getAuthenticationManager().authenticate(
-          new UsernamePasswordAuthenticationToken(
-              requestDto.getUsername(),
-              requestDto.getPassword(),
-              null
-          )
-      );
-
-    } catch (IOException e) {
-      log.error(e.getMessage());
-      throw new NotFoundException(CommonErrorCode.TOKEN_ERROR);
+    public JwtAuthenticationFilter(JwtTokenHelper jwtTokenHelper) {
+        this.jwtTokenHelper = jwtTokenHelper;
+        setFilterProcessesUrl("/users/login");
     }
-  }
 
-  @Override
-  protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response,
-      FilterChain chain, Authentication authResult) throws IOException {
+    @Override
+    public Authentication attemptAuthentication(HttpServletRequest request,
+        HttpServletResponse response) throws AuthenticationException {
+        try {
+            LoginRequestDto requestDto = new ObjectMapper().readValue(
+                request.getInputStream(), LoginRequestDto.class);
 
-    String username = ((UserDetailsImpl)authResult.getPrincipal()).getUsername();
-    UserStatusEnum status = ((UserDetailsImpl)authResult.getPrincipal()).getUser().getStatus();
-    UserRoleEnum role = ((UserDetailsImpl)authResult.getPrincipal()).getUser().getRole();
+            return getAuthenticationManager().authenticate(
+                new UsernamePasswordAuthenticationToken(
+                    requestDto.getUsername(),
+                    requestDto.getPassword(),
+                    null
+                )
+            );
 
-    log.info("username: {}", username);
-    log.info("status: {}", status);
-    log.info("role: {}", role);
+        } catch (IOException e) {
+            log.error(e.getMessage());
+            throw new NotFoundException(CommonErrorCode.TOKEN_ERROR);
+        }
+    }
 
-    String accessToken = jwtTokenHelper.createToken(username, status, role);
-    String refreshToken = jwtTokenHelper.createRefreshToken();
-    response.addHeader(JwtTokenHelper.AUTHORIZATION_HEADER, accessToken);
-    response.addHeader(JwtTokenHelper.REFRESH_TOKEN_HEADER, refreshToken);
-    jwtTokenHelper.saveRefreshToken(username, refreshToken);
+    @Override
+    protected void successfulAuthentication(HttpServletRequest request,
+        HttpServletResponse response,
+        FilterChain chain, Authentication authResult) throws IOException {
 
-    response.setContentType("application/json");
-    response.setCharacterEncoding("UTF-8");
-    response.getWriter().write(new ObjectMapper()
-        .writeValueAsString(new ResponseMessageDto(MessageEnum.LOGIN_SUCCESS.LOGIN_SUCCESS)));
-    response.getWriter().flush();
+        String username = ((UserDetailsImpl) authResult.getPrincipal()).getUsername();
+        UserStatusEnum status = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getStatus();
+        UserRoleEnum role = ((UserDetailsImpl) authResult.getPrincipal()).getUser().getRole();
 
-  }
+        log.info("username: {}", username);
+        log.info("status: {}", status);
+        log.info("role: {}", role);
 
-  @Override
-  protected void unsuccessfulAuthentication(HttpServletRequest request,
-      HttpServletResponse response, AuthenticationException failed) throws IOException {
+        String accessToken = jwtTokenHelper.createToken(username, status, role);
+        String refreshToken = jwtTokenHelper.createRefreshToken();
+        response.addHeader(JwtTokenHelper.AUTHORIZATION_HEADER, accessToken);
+        response.addHeader(JwtTokenHelper.REFRESH_TOKEN_HEADER, refreshToken);
+        jwtTokenHelper.saveRefreshToken(username, refreshToken);
 
-    response.setStatus(401);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(new ObjectMapper()
+            .writeValueAsString(new ResponseMessageDto(MessageEnum.LOGIN_SUCCESS.LOGIN_SUCCESS)));
+        response.getWriter().flush();
 
-    response.setCharacterEncoding("utf-8");
-    response.getWriter().write("상태 : " + response.getStatus() + ", 로그인 실패");
-  }
+    }
+
+    @Override
+    protected void unsuccessfulAuthentication(HttpServletRequest request,
+        HttpServletResponse response, AuthenticationException failed) throws IOException {
+
+        response.setStatus(401);
+
+        response.setCharacterEncoding("utf-8");
+        response.getWriter().write("상태 : " + response.getStatus() + ", 로그인 실패");
+    }
 }

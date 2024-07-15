@@ -2,18 +2,24 @@ package com.sparta.team15.controller;
 
 import com.sparta.team15.dto.CardRequestDto;
 import com.sparta.team15.dto.CardResponseDto;
-import com.sparta.team15.security.UserDetailsImpl;
 import com.sparta.team15.dto.ResponseMessageDto;
 import com.sparta.team15.enums.MessageEnum;
+import com.sparta.team15.security.UserDetailsImpl;
 import com.sparta.team15.service.CardService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/cards")
@@ -27,8 +33,9 @@ public class CardController {
 
     // 카드 생성
     @PostMapping
-    public ResponseEntity<ResponseMessageDto> createCard(@Valid @RequestBody CardRequestDto requestDto,
-                                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<ResponseMessageDto> createCard(
+        @Valid @RequestBody CardRequestDto requestDto,
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
         cardService.createCard(requestDto, userDetails);
         return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.CARD_CREATED));
     }
@@ -62,8 +69,8 @@ public class CardController {
     // 카드 수정
     @PutMapping("/{cardId}")
     public ResponseEntity<ResponseMessageDto> updateCard(@PathVariable Long cardId,
-                                             @RequestBody CardRequestDto requestDto,
-                                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        @RequestBody CardRequestDto requestDto,
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
         cardService.updateCard(cardId, requestDto, userDetails);
         return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.CARD_UPDATED));
     }
@@ -71,7 +78,7 @@ public class CardController {
     // 카드 삭제
     @DeleteMapping("/{cardId}")
     public ResponseEntity<ResponseMessageDto> updateCard(@PathVariable Long cardId,
-                                             @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
         cardService.deleteCard(cardId, userDetails);
         return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.CARD_DELETED));
     }
@@ -79,8 +86,8 @@ public class CardController {
     // 카드 순서 이동
     @PutMapping("/position/{cardId}")
     public ResponseEntity<ResponseMessageDto> updateCardPosition(@PathVariable Long cardId,
-                                                     @RequestBody CardRequestDto requestDto,
-                                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        @RequestBody CardRequestDto requestDto,
+        @AuthenticationPrincipal UserDetailsImpl userDetails) {
         cardService.updateCardPosition(cardId, requestDto, userDetails);
         return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.CARD_UPDATE_POSITION));
     }

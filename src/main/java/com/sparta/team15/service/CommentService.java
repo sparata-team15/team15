@@ -26,7 +26,8 @@ public class CommentService {
 
     public Page<CommentResponseDto> getAllComments(Long cardId, int page) {
         Card card = cardRepository.findById(cardId)
-                .orElseThrow(() -> new IllegalArgumentException(MessageEnum.INVALID_CARD_ID.getMessage()));
+            .orElseThrow(
+                () -> new IllegalArgumentException(MessageEnum.INVALID_CARD_ID.getMessage()));
 
         Pageable pageable = PageRequest.of(page, 10, Sort.by(Sort.Direction.DESC, "createdAt"));
         Page<Comment> commentsPage = commentRepository.findAllByCard(card, pageable);
@@ -37,7 +38,8 @@ public class CommentService {
     @Transactional
     public void createComment(UserDetailsImpl userDetails, Long cardId, CommentRequestDto requestDto) {
         Card card = cardRepository.findById(cardId)
-                .orElseThrow(() -> new IllegalArgumentException(MessageEnum.INVALID_CARD_ID.getMessage()));
+            .orElseThrow(
+                () -> new IllegalArgumentException(MessageEnum.INVALID_CARD_ID.getMessage()));
 
         Comment comment = new Comment(userDetails.getUser(), card, requestDto.getContent());
         commentRepository.save(comment);
@@ -50,7 +52,8 @@ public class CommentService {
         }
 
         Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException(MessageEnum.INVALID_COMMENT_ID.getMessage()));
+            .orElseThrow(
+                () -> new IllegalArgumentException(MessageEnum.INVALID_COMMENT_ID.getMessage()));
 
         if (comment.getUser().getId() != userDetails.getUser().getId()) {
             throw new IllegalStateException(MessageEnum.UNAUTHORIZED_ACTION.getMessage());
@@ -67,7 +70,8 @@ public class CommentService {
         }
 
         Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException(MessageEnum.INVALID_COMMENT_ID.getMessage()));
+            .orElseThrow(
+                () -> new IllegalArgumentException(MessageEnum.INVALID_COMMENT_ID.getMessage()));
 
         if (comment.getUser().getId() != userDetails.getUser().getId()) {
             throw new IllegalStateException(MessageEnum.UNAUTHORIZED_ACTION.getMessage());

@@ -14,7 +14,7 @@ public class BoardRequestDto {
     @NotNull(message = "설명이 필요합니다.")
     private String description;
 
-    public Board toEntity(User createdBy) {
-        return Board.builder().title(title).description(description).createdBy(createdBy).build();
+    public Board toEntity(User foundUser) {
+        return Board.builder().title(title).description(description).createdBy(foundUser).build();
     }
 }

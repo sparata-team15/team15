@@ -41,7 +41,7 @@ public class UserController {
     public ResponseEntity<ResponseMessageDto> withDraw(
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @Valid @RequestBody WithDrawUserRequestDto requestdto) {
-        userService.withDraw(userDetails.getUser().getId(),requestdto.getPassword());
+        userService.withDraw(userDetails.getUser().getId(), requestdto.getPassword());
         return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.WITHDRAW_SUCCESS_MESSAGE));
     }
 
@@ -71,7 +71,7 @@ public class UserController {
         String newAccessToken = jwtTokenHelper.createToken(username, statusEnum, roleEnum);
         return ResponseEntity.ok()
             .header(JwtTokenHelper.AUTHORIZATION_HEADER, newAccessToken)
-            .body(new ResponseMessageDto(MessageEnum.UPDATE_TOKEN_SUCCESS_MESSAGE,newAccessToken));
+            .body(new ResponseMessageDto(MessageEnum.UPDATE_TOKEN_SUCCESS_MESSAGE, newAccessToken));
     }
 
 }

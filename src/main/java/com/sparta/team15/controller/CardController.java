@@ -7,6 +7,8 @@ import com.sparta.team15.dto.ResponseMessageDto;
 import com.sparta.team15.enums.MessageEnum;
 import com.sparta.team15.service.CardService;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -33,28 +35,28 @@ public class CardController {
 
     // 카드 전체 목록 조회
     @GetMapping
-    public List<CardResponseDto> getAllCards(@RequestParam(defaultValue = "0") int page,
-                                             @RequestParam(defaultValue = "5") int size,
+    public List<CardResponseDto> getAllCards(@RequestParam @Min(1) int page,
+                                             @RequestParam @Min(1) @Max(5) int size,
                                              @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return cardService.getAllCards(page, size, userDetails);
+        return cardService.getAllCards(page-1, size, userDetails);
     }
 
     // 카드 상태별 조회
     @GetMapping("/status/{columnId}")
     public List<CardResponseDto> getCardsByStatus(@PathVariable Long columnId,
-                                                  @RequestParam(defaultValue = "0") int page,
-                                                  @RequestParam(defaultValue = "5") int size,
+                                                  @RequestParam @Min(1) int page,
+                                                  @RequestParam @Min(1) @Max(5) int size,
                                                   @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return cardService.getCardsByStatus(columnId, page, size, userDetails);
+        return cardService.getCardsByStatus(columnId, page-1, size, userDetails);
     }
 
     // 카드 작업자별 조회
     @GetMapping("/{author}")
     public List<CardResponseDto> getCardsByAuthor(@PathVariable String author,
-                                                  @RequestParam(defaultValue = "0") int page,
-                                                  @RequestParam(defaultValue = "5") int size,
+                                                  @RequestParam @Min(1) int page,
+                                                  @RequestParam @Min(1) @Max(5) int size,
                                                   @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        return cardService.getCardsByAuthor(author, page, size, userDetails);
+        return cardService.getCardsByAuthor(author, page-1, size, userDetails);
     }
 
     // 카드 수정

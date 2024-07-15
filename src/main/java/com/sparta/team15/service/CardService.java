@@ -35,11 +35,14 @@ public class CardService {
     // 카드 생성
     public void createCard(CardRequestDto requestDto, UserDetailsImpl userDetails) {
         User user = userDetails.getUser();
-        BoardColumn boardColumn = boardColumnRepository.findById(requestDto.getColumnId())
-                .orElseThrow(() -> new NotFoundException(BoardColumnErrorCode.NOT_FOUND_COLUMN));
+        BoardColumn boardColumn = findBoardColumn(requestDto.getColumnId());
 
-        boardUserRepository.findByUserIdAndBoardId(user.getId(), boardColumn.getBoard().getId())
-                .orElseThrow(() -> new NotFoundException(BoardColumnErrorCode.NOT_TEAM_MEMBER));
+        //쿼리 최적화 추가
+        boolean isExistBoardUser = boardUserRepository
+                .existsByUserIdAndBoardId(user.getId(), boardColumn.getBoard().getId());
+        if (!isExistBoardUser) {
+            throw new NotFoundException(BoardColumnErrorCode.NOT_TEAM_MEMBER);
+        }
 
         Card card = new Card(
                 user,
@@ -54,7 +57,6 @@ public class CardService {
 
     // 카드 전체 목록 조회
     public List<CardResponseDto> getAllCards(int page, int size, UserDetailsImpl userDetails) {
-        User user = userDetails.getUser();
 
         Pageable pageable = PageRequest.of(page, size);
 
@@ -64,9 +66,7 @@ public class CardService {
 
     // 카드 상태별 조회
     public List<CardResponseDto> getCardsByStatus(Long columnId, int page, int size, UserDetailsImpl userDetails) {
-        User user = userDetails.getUser();
-        BoardColumn boardColumn = boardColumnRepository.findById(columnId)
-                .orElseThrow(() -> new NotFoundException(BoardColumnErrorCode.NOT_FOUND_COLUMN));
+        BoardColumn boardColumn = findBoardColumn(columnId);
 
         Pageable pageable = PageRequest.of(page, size);
 
@@ -76,7 +76,6 @@ public class CardService {
 
     // 카드 작업자별 조회
     public List<CardResponseDto> getCardsByAuthor(String author, int page, int size, UserDetailsImpl userDetails) {
-        User user = userDetails.getUser();
 
         Pageable pageable = PageRequest.of(page, size);
 
@@ -88,8 +87,7 @@ public class CardService {
     public void updateCard(Long cardId, CardRequestDto requestDto, UserDetailsImpl userDetails) {
         User user = userDetails.getUser();
 
-        Card card = cardRepository.findById(cardId)
-                .orElseThrow(() -> new NotFoundException(UserErrorCode.NOT_FOUND_CARD));
+        Card card = findCard(cardId);
 
         if (card.getUser().getId() != user.getId()) {
             throw new AuthorizedException(UserErrorCode.NOT_AUTHORIZATION_ABOUT_CARD);
@@ -104,8 +102,7 @@ public class CardService {
     public void deleteCard(Long cardId, UserDetailsImpl userDetails) {
         User user = userDetails.getUser();
 
-        Card card = cardRepository.findById(cardId)
-                .orElseThrow(() -> new NotFoundException(UserErrorCode.NOT_FOUND_CARD));
+        Card card = findCard(cardId);
 
         if (card.getUser().getId() != user.getId()) {
             throw new AuthorizedException(UserErrorCode.NOT_AUTHORIZATION_ABOUT_CARD);
@@ -116,15 +113,21 @@ public class CardService {
 
     // 카드 순서 이동
     public void updateCardPosition(Long cardId, CardRequestDto requestDto, UserDetailsImpl userDetails) {
-        User user = userDetails.getUser();
 
-        Card card = cardRepository.findById(cardId)
-                .orElseThrow(() -> new NotFoundException(UserErrorCode.NOT_FOUND_CARD));
+        Card card = findCard(cardId);
 
         card.updatePosition(requestDto.getPosition());
         cardRepository.save(card);
+    }
 
+    private BoardColumn findBoardColumn(Long columnId) {
+        return boardColumnRepository.findById(columnId)
+                .orElseThrow(() -> new NotFoundException(BoardColumnErrorCode.NOT_FOUND_COLUMN));
+    }
 
+    private Card findCard(Long cardId) {
+        return cardRepository.findById(cardId)
+                .orElseThrow(() -> new NotFoundException(UserErrorCode.NOT_FOUND_CARD));
     }
 
 }

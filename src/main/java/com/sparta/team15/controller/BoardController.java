@@ -93,7 +93,8 @@ public class BoardController {
         @AuthenticationPrincipal UserDetailsImpl userDetails,
         @RequestParam(defaultValue = "0") int page,
         @RequestParam(defaultValue = "5") int size) {
-        Page<BoardResponseDto> responseDtos = boardService.getBoards(userDetails.getUser(), page, size);
+        Page<BoardResponseDto> responseDtos = boardService.getBoards(userDetails.getUser(), page,
+            size);
         PageResponse<BoardResponseDto> response = new PageResponse<>(responseDtos);
         return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.BOARDS_READ_SUCCESS, response));
     }

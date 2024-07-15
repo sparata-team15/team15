@@ -20,17 +20,21 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class CommentService {
+
     private final CommentRepository commentRepository;
     private final CardRepository cardRepository;
     private final UserRepository userRepository;
 
     // 댓글 생성
     @Transactional
-    public void createComment(UserDetailsImpl userDetails, Long cardId, CommentRequestDto requestDto) {
+    public void createComment(UserDetailsImpl userDetails, Long cardId,
+        CommentRequestDto requestDto) {
         User user = userRepository.findById(userDetails.getUser().getId())
-                .orElseThrow(() -> new IllegalArgumentException(MessageEnum.INVALID_USER_ID.getMessage()));
+            .orElseThrow(
+                () -> new IllegalArgumentException(MessageEnum.INVALID_USER_ID.getMessage()));
         Card card = cardRepository.findById(cardId)
-                .orElseThrow(() -> new IllegalArgumentException(MessageEnum.INVALID_CARD_ID.getMessage()));
+            .orElseThrow(
+                () -> new IllegalArgumentException(MessageEnum.INVALID_CARD_ID.getMessage()));
 
         Comment comment = new Comment(user, card, requestDto.getContent());
         commentRepository.save(comment);
@@ -39,7 +43,8 @@ public class CommentService {
     // 댓글 전체 목록 조회
     public List<CommentResponseDto> getAllComments(Long cardId) {
         Card card = cardRepository.findById(cardId)
-                .orElseThrow(() -> new IllegalArgumentException(MessageEnum.INVALID_CARD_ID.getMessage()));
+            .orElseThrow(
+                () -> new IllegalArgumentException(MessageEnum.INVALID_CARD_ID.getMessage()));
 
         List<Comment> comments = commentRepository.findAllByCard(card);
         List<CommentResponseDto> commentResponseDto = new ArrayList<>();
@@ -51,9 +56,11 @@ public class CommentService {
 
     // 댓글 수정
     @Transactional
-    public void updateComment(UserDetailsImpl userDetails, Long commentId, CommentRequestDto requestDto) {
+    public void updateComment(UserDetailsImpl userDetails, Long commentId,
+        CommentRequestDto requestDto) {
         Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException(MessageEnum.INVALID_COMMENT_ID.getMessage()));
+            .orElseThrow(
+                () -> new IllegalArgumentException(MessageEnum.INVALID_COMMENT_ID.getMessage()));
 
         if (comment.getUser().getId() != userDetails.getUser().getId()) {
             throw new IllegalStateException(MessageEnum.UNAUTHORIZED_ACTION.getMessage());
@@ -67,7 +74,8 @@ public class CommentService {
     @Transactional
     public void deleteComment(UserDetailsImpl userDetails, Long commentId) {
         Comment comment = commentRepository.findById(commentId)
-                .orElseThrow(() -> new IllegalArgumentException(MessageEnum.INVALID_COMMENT_ID.getMessage()));
+            .orElseThrow(
+                () -> new IllegalArgumentException(MessageEnum.INVALID_COMMENT_ID.getMessage()));
 
         if (comment.getUser().getId() != userDetails.getUser().getId()) {
             throw new IllegalStateException(MessageEnum.UNAUTHORIZED_ACTION.getMessage());

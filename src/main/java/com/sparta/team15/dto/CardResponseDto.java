@@ -5,6 +5,7 @@ import lombok.Getter;
 
 @Getter
 public class CardResponseDto {
+
     private String author;
     private Long columnId;
     private String content;

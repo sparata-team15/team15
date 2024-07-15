@@ -1,16 +1,20 @@
 package com.sparta.team15.entity;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import java.util.Date;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.sql.Timestamp;
-import java.util.Date;
 
 @Entity
 @Getter
 @NoArgsConstructor
-public class Card extends Timestamped{
+public class Card extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,7 +42,8 @@ public class Card extends Timestamped{
 
     private String modifiedAt;
 
-    public Card(User user, String author, BoardColumn boardColumn, String content, String description, Date date) {
+    public Card(User user, String author, BoardColumn boardColumn, String content,
+        String description, Date date) {
         this.user = user;
         this.author = author;
         this.boardColumn = boardColumn;

@@ -6,7 +6,6 @@ import com.sparta.team15.entity.User;
 import com.sparta.team15.repository.BoardUserRepository;
 import com.sparta.team15.repository.UserRepository;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,7 +28,8 @@ public class BoardUserService {
      */
     public boolean isExistedUser(User user, Board board) {
         // 유저가 존재하고 board와의 관계를 확인
-        return userRepository.existsById(user.getId()) && boardUserRepository.existsByUserAndBoard(user, board);
+        return userRepository.existsById(user.getId()) && boardUserRepository.existsByUserAndBoard(
+            user, board);
     }
 
     /**

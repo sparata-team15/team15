@@ -31,13 +31,12 @@ public class CommentController {
     //댓글 생성
     @PostMapping
     public ResponseEntity<ResponseMessageDto> createComment(
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @PathVariable Long cardId,
-            @RequestBody @Valid CommentRequestDto requestDto) {
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable Long cardId,
+        @RequestBody @Valid CommentRequestDto requestDto) {
         commentService.createComment(userDetails, cardId, requestDto);
         return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.COMMENT_CREATED));
     }
-
 
 
     // 조회
@@ -51,9 +50,9 @@ public class CommentController {
     //댓글 수정
     @PutMapping("/{commentId}")
     public ResponseEntity<ResponseMessageDto> updateComment(
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @PathVariable Long commentId,
-            @RequestBody @Valid CommentRequestDto requestDto) {
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable Long commentId,
+        @RequestBody @Valid CommentRequestDto requestDto) {
         commentService.updateComment(userDetails, commentId, requestDto);
         return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.COMMENT_UPDATED));
     }
@@ -62,8 +61,8 @@ public class CommentController {
     //댓글 삭제
     @DeleteMapping("/{commentId}")
     public ResponseEntity<ResponseMessageDto> deleteComment(
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @PathVariable Long commentId) {
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable Long commentId) {
         commentService.deleteComment(userDetails, commentId);
         return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.COMMENT_DELETED));
     }

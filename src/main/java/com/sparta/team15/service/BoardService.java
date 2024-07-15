@@ -17,6 +17,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -90,17 +94,18 @@ public class BoardService {
 
     /**
      * 모든 보드 조회
+     *
      * @param user
+     * @param page
+     * @param size
      * @return
      */
-    public List<BoardResponseDto> getBoards(User user) {
+    public Page<BoardResponseDto> getBoards(User user, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         List<Long> boardIds = boardUserService.getBoardIdsByUserId(user.getId());
+        Page<Board> boards = boardRepository.findAllByIdInAndIsDeletedFalse(boardIds, pageable);
 
-        List<Board> boards = boardRepository.findAllByIdInAndIsDeletedFalse(boardIds);
-
-        List<BoardResponseDto> boardResponseDtos = boards.stream()
-            .map(BoardResponseDto::new)
-            .collect(Collectors.toList());
+        Page<BoardResponseDto> boardResponseDtos = boards.map(BoardResponseDto::new);
 
         return boardResponseDtos;
     }

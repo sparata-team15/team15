@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Team Boards</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+    }
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 text-gray-900">
+<div class="container mx-auto p-4">
+  <header class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold">Team Title</h1>
+    <svg class="w-8 h-8 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+    </svg>
+  </header>
+  <section>
+    <h2 class="text-2xl font-bold mb-4">Boards</h2>
+    <div id="board-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <!-- Boards will be dynamically inserted here -->
+    </div>
+    <button id="add-board-btn" class="bg-blue-500 text-white p-6 rounded-lg shadow-lg flex items-center justify-center">
+      <svg class="w-6 h-6 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+      </svg>
+      보드 추가 버튼
+    </button>
+  </section>
+</div>
+
+<!-- Board creation popup -->
+<div id="popup" class="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center hidden">
+  <div class="bg-white p-8 rounded shadow-md w-96">
+    <h2 class="text-2xl font-bold mb-6">Create Board</h2>
+    <form id="board-form">
+      <div class="mb-4">
+        <label class="block text-gray-700">Title</label>
+        <input type="text" id="title" class="w-full p-2 border border-gray-300 rounded mt-1">
+      </div>
+      <div class="mb-4">
+        <label class="block text-gray-700">Description</label>
+        <input type="text" id="description" class="w-full p-2 border border-gray-300 rounded mt-1">
+      </div>
+      <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded">Create</button>
+    </form>
+    <button id="close-popup" class="w-full bg-red-500 text-white p-2 rounded mt-4">Cancel</button>
+  </div>
+</div>
+
+<script>
+  document.getElementById('add-board-btn').addEventListener('click', () => {
+    document.getElementById('popup').classList.remove('hidden');
+  });
+
+  document.getElementById('close-popup').addEventListener('click', () => {
+    document.getElementById('popup').classList.add('hidden');
+  });
+
+  document.getElementById('board-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const title = document.getElementById('title').value;
+    const description = document.getElementById('description').value;
+
+    const response = await fetch('/api/boards', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': localStorage.getItem('token') // Assuming the token is stored in localStorage
+      },
+      body: JSON.stringify({ title, description })
+    });
+
+    if (response.ok) {
+      const board = await response.json();
+      document.getElementById('board-container').insertAdjacentHTML('beforeend', `
+          <div class="bg-white p-6 rounded-lg shadow-lg">
+            <h3 class="text-xl font-semibold mb-2">${board.title}</h3>
+            <p class="text-gray-600">${board.description}</p>
+          </div>
+        `);
+      document.getElementById('popup').classList.add('hidden');
+      document.getElementById('board-form').reset();
+    } else {
+      alert('보드를 생성할 수 없습니다.');
+    }
+  });
+
+  async function loadBoards() {
+    const response = await fetch('/api/boards', {
+      headers: {
+        'Authorization': localStorage.getItem('token')
+      }
+    });
+    const boards = await response.json();
+    const container = document.getElementById('board-container');
+    container.innerHTML = '';
+    boards.forEach(board => {
+      container.insertAdjacentHTML('beforeend', `
+          <div class="bg-white p-6 rounded-lg shadow-lg">
+            <h3 class="text-xl font-semibold mb-2">${board.title}</h3>
+            <p class="text-gray-600">${board.description}</p>
+          </div>
+        `);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', loadBoards);
+</script>
+</body>
+</html>

@@ -45,7 +45,7 @@ public class CommentService {
 
     @Transactional
     public void updateComment(UserDetailsImpl userDetails, Long commentId, CommentRequestDto requestDto) {
-        if (!commentRepository.existsByIdAndCardId(commentId, requestDto.getCardId())) {
+        if (!commentRepository.existsByIdAndCardCardId(commentId, requestDto.getCardId())) {
             throw new IllegalArgumentException(MessageEnum.INVALID_COMMENT_ID.getMessage());
         }
 
@@ -62,7 +62,7 @@ public class CommentService {
 
     @Transactional
     public void deleteComment(UserDetailsImpl userDetails, Long commentId, Long cardId) {
-        if (!commentRepository.existsByIdAndCardId(commentId, cardId)) {
+        if (!commentRepository.existsByIdAndCardCardId(commentId, cardId)) {
             throw new IllegalArgumentException(MessageEnum.INVALID_COMMENT_ID.getMessage());
         }
 

@@ -10,5 +10,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
     Page<Comment> findAllByCard(Card card, Pageable pageable);
-    boolean existsByIdAndCardId(Long commentId, Long cardId);
+    boolean existsByIdAndCardCardId(Long commentId, Long cardId);
 }

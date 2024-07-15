@@ -43,9 +43,9 @@ public class CommentController {
     //댓글 수정
     @PutMapping("/{commentId}")
     public ResponseEntity<ResponseMessageDto> updateComment(
-            @AuthenticationPrincipal UserDetailsImpl userDetails,
-            @PathVariable Long commentId,
-            @RequestBody @Valid CommentRequestDto requestDto) {
+        @AuthenticationPrincipal UserDetailsImpl userDetails,
+        @PathVariable Long commentId,
+        @RequestBody @Valid CommentRequestDto requestDto) {
         commentService.updateComment(userDetails, commentId, requestDto);
         return ResponseEntity.ok(new ResponseMessageDto(MessageEnum.COMMENT_UPDATED));
     }

@@ -51,20 +51,15 @@
     </div>
     <div>
       <h2 class="text-xl font-bold mb-4">댓글</h2>
-      <div class="mb-4 p-4 border border-gray-300 rounded">
-        <p class="mb-2">댓글 1</p>
-        <p class="text-gray-600 text-sm">작성자</p>
-      </div>
-      <div class="mb-4 p-4 border border-gray-300 rounded">
-        <p class="mb-2">댓글 2</p>
-        <p class="text-gray-600 text-sm">작성자</p>
-      </div>
       <div class="mb-4">
-        <textarea class="w-full p-2 border border-gray-300 rounded" placeholder="내용을 입력해주세요"></textarea>
+        <textarea id="commentContent" class="w-full p-2 border border-gray-300 rounded" placeholder="내용을 입력해주세요"></textarea>
+        <button id="submitComment" class="bg-blue-500 text-white px-4 py-2 rounded mt-2">댓글 달기</button>
       </div>
-      <button class="bg-blue-500 text-white px-4 py-2 rounded">댓글 달기</button>
+      <div id="commentList">
+      </div>
     </div>
   </div>
 </div>
+<script src="cardsdetail.js"></script>
 </body>
 </html>

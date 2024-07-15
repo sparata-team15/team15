@@ -11,7 +11,9 @@ import com.sparta.team15.exception.UserErrorCode;
 import com.sparta.team15.repository.BoardColumnRepository;
 import com.sparta.team15.repository.BoardRepository;
 import com.sparta.team15.repository.BoardUserRepository;
-import jakarta.validation.Valid;
+
+import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -89,16 +91,23 @@ public class BoardColumnService {
 
     /**
      * 컬럼 순서 이동
+<<<<<<< Updated upstream
      * @param columnId
      * @param requestDto
+=======
+     *
+     * @param requestDtoList
+>>>>>>> Stashed changes
      * @param loginUser
      * @return BoardColumnResponseDto
      */
     @Transactional
-    public BoardColumnResponseDto updateBoardColumnOrder(Long columnId, BoardColumnOrderRequestDto requestDto, User loginUser){
+    public BoardColumnResponseDto updateBoardColumnOrder(
+        List<BoardColumnOrderRequestDto> requestDtoList,
+        User loginUser) {
         // 컬럼 확인
-        BoardColumn boardColumn = boardColumnRepository.findById(columnId).orElseThrow(
-                () -> new NotFoundException(BoardColumnErrorCode.NOT_FOUND_COLUMN));
+        BoardColumn boardColumn = boardColumnRepository.findById(requestDtoList.get(0).getColumnId()).orElseThrow(
+            () -> new NotFoundException(BoardColumnErrorCode.NOT_FOUND_COLUMN));
 
         // 보드 존재 확인
         boardRepository.findById(boardColumn.getBoard().getId()).orElseThrow(
@@ -113,10 +122,20 @@ public class BoardColumnService {
         // 매니저 인지 확인
         if(!loginUser.getRole().equals(UserRoleEnum.MANAGER)){
             throw new NotFoundException(BoardColumnErrorCode.NO_AUTHENTICATION);
-        };
 
-        boardColumn.updatePosition(requestDto.getPosition());
+        }
+
+        for (BoardColumnOrderRequestDto requestDto : requestDtoList) {
+            BoardColumn column = boardColumnRepository.findById(requestDto.getColumnId()).orElseThrow(
+                    () -> new NotFoundException(BoardColumnErrorCode.NOT_FOUND_COLUMN));
+
+            column.updatePosition(requestDto.getPosition());
+        }
 
         return new BoardColumnResponseDto(boardColumn);
+    }
+
+    public List<BoardColumnResponseDto> getBoardColumnList(Long boardId) {
+        return boardColumnRepository.findAllByBoardId(boardId).stream().map(BoardColumnResponseDto::new).toList();
     }
 }

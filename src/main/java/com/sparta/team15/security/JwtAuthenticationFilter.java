@@ -73,7 +73,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     response.getWriter().write(new ObjectMapper()
         .writeValueAsString(new ResponseMessageDto(MessageEnum.LOGIN_SUCCESS)));
     response.getWriter().flush();
-
   }
 
   @Override
